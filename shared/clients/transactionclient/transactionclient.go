@@ -19,6 +19,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/spanner"
@@ -78,8 +79,20 @@ type Client interface {
 	StoreTransaction(ctx context.Context, transaction TransactionData) error
 }
 
+type ClientFactory func(ctx context.Context, projectID, instanceID, databaseID string) (Client, error)
+
+var txnClientReg = make(map[string]ClientFactory)
+
+func RegisterTransactionClient(name string, clientFact ClientFactory) {
+	txnClientReg[name] = clientFact
+}
+
 // New creates a new transaction client.
 func New(ctx context.Context, projectID, instanceID, databaseID string, opts ...option.ClientOption) (Client, error) {
+	if cfact, ok := txnClientReg[strings.Split(databaseID, ":")[0]]; ok {
+		return cfact(ctx, projectID, instanceID, databaseID)
+	}
+	// Default is spanner client
 	database := fmt.Sprintf("projects/%s/instances/%s/databases/%s", projectID, instanceID, databaseID)
 	spannerClient, err := spanner.NewClient(ctx, database, opts...)
 	if err != nil {
