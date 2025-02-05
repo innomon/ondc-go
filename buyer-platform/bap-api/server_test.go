@@ -134,7 +134,7 @@ func TestInitServerFailed(t *testing.T) {
 		conf              config.BAPAPIConfig
 		pubsubClient      *pubsub.Client
 		registryClient    *registryclienttest.Stub
-		transactionClient *transactionclient.Client
+		transactionClient transactionclient.Client
 	}{
 		{
 			pubsubClient: nil,

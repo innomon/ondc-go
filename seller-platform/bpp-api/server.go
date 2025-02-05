@@ -45,7 +45,7 @@ var validate = model.Validator()
 
 type server struct {
 	pubsubClient      *pubsub.Client
-	transactionClient *transactionclient.Client
+	transactionClient transactionclient.Client
 	topic             *pubsub.Topic
 	mux               http.Handler
 	conf              config.BPPAPIConfig
@@ -94,7 +94,7 @@ func main() {
 	}
 }
 
-func initServer(ctx context.Context, conf config.BPPAPIConfig, registryClient middleware.RegistryClient, pubsubClient *pubsub.Client, transactionClient *transactionclient.Client, clk clock.Clock) (*server, error) {
+func initServer(ctx context.Context, conf config.BPPAPIConfig, registryClient middleware.RegistryClient, pubsubClient *pubsub.Client, transactionClient transactionclient.Client, clk clock.Clock) (*server, error) {
 	topic := pubsubClient.Topic(conf.TopicID)
 	exist, err := topic.Exists(ctx)
 	if err != nil {

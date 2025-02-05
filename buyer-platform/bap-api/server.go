@@ -48,7 +48,7 @@ type server struct {
 	topic             *pubsub.Topic
 	mux               http.Handler
 	port              int
-	transactionClient *transactionclient.Client
+	transactionClient transactionclient.Client
 }
 
 func main() {
@@ -94,7 +94,7 @@ func main() {
 	}
 }
 
-func initServer(ctx context.Context, conf config.BAPAPIConfig, pubsubClient *pubsub.Client, registryClient middleware.RegistryClient, transactionClient *transactionclient.Client, clk clock.Clock) (*server, error) {
+func initServer(ctx context.Context, conf config.BAPAPIConfig, pubsubClient *pubsub.Client, registryClient middleware.RegistryClient, transactionClient transactionclient.Client, clk clock.Clock) (*server, error) {
 	// validate clients
 	if pubsubClient == nil {
 		return nil, errors.New("init server: Pub/Sub client is nil")

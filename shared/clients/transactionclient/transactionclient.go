@@ -57,11 +57,6 @@ var (
 	}
 )
 
-// Client is a wrapper of Spanner Client for storing ONDC transaction logs.
-type Client struct {
-	spannerClient *spanner.Client
-}
-
 // TransactionData represent data of transaction logs.
 type TransactionData struct {
 	ID              string
@@ -78,19 +73,29 @@ type TransactionData struct {
 	ReqReceivedTime time.Time
 }
 
+// Client for extending client storage beyond spanner
+type Client interface {
+	StoreTransaction(ctx context.Context, transaction TransactionData) error
+}
+
 // New creates a new transaction client.
-func New(ctx context.Context, projectID, instanceID, databaseID string, opts ...option.ClientOption) (*Client, error) {
+func New(ctx context.Context, projectID, instanceID, databaseID string, opts ...option.ClientOption) (Client, error) {
 	database := fmt.Sprintf("projects/%s/instances/%s/databases/%s", projectID, instanceID, databaseID)
 	spannerClient, err := spanner.NewClient(ctx, database, opts...)
 	if err != nil {
 		return nil, err
 	}
-	client := &Client{spannerClient: spannerClient}
+	client := &SpannerClient{spannerClient: spannerClient}
 	return client, nil
 }
 
+// SpannerClient is a wrapper of Spanner Client for storing ONDC transaction logs.
+type SpannerClient struct {
+	spannerClient *spanner.Client
+}
+
 // StoreTransaction inserts the ONDC transaction details in the Spanner table.
-func (c *Client) StoreTransaction(ctx context.Context, transaction TransactionData) error {
+func (c *SpannerClient) StoreTransaction(ctx context.Context, transaction TransactionData) error {
 	typeCode, ok := transactionTypeMap[transaction.Type]
 	if !ok {
 		return fmt.Errorf("store transaction: invalid type %q", transaction.Type)

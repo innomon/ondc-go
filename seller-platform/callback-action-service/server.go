@@ -43,7 +43,7 @@ type server struct {
 	pubsubClient      *pubsub.Client
 	httpClient        *http.Client
 	keyClient         keyClient
-	transactionClient *transactionclient.Client
+	transactionClient transactionclient.Client
 	config            config.CallbackActionConfig
 	clk               clock.Clock
 
@@ -95,7 +95,7 @@ func main() {
 	}
 }
 
-func initServer(ctx context.Context, httpClient *http.Client, pubsubClient *pubsub.Client, keyClient keyClient, transactionClient *transactionclient.Client, conf config.CallbackActionConfig, clk clock.Clock) (*server, error) {
+func initServer(ctx context.Context, httpClient *http.Client, pubsubClient *pubsub.Client, keyClient keyClient, transactionClient transactionclient.Client, conf config.CallbackActionConfig, clk clock.Clock) (*server, error) {
 	// validate clients.
 	if httpClient == nil {
 		return nil, errors.New("init server: HTTP client is nil")

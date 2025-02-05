@@ -44,7 +44,7 @@ type server struct {
 	pubsubClient      *pubsub.Client
 	httpClient        *http.Client
 	keyClient         keyClient
-	transactionClient *transactionclient.Client
+	transactionClient transactionclient.Client
 	clk               clock.Clock
 
 	subs []*pubsub.Subscription
