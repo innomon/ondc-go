@@ -297,7 +297,7 @@ func TestHandlersSuccess(t *testing.T) {
 			if psMsg == nil {
 				t.Fatalf("%s publish no message", test.handlerName)
 			}
-			if bytes.Compare(psMsg.Data, test.body) != 0 {
+			if !bytes.Equal(psMsg.Data, test.body) {
 				t.Errorf("%s Pub/Sub message data is not equal to request body", test.handlerName)
 			}
 		})
