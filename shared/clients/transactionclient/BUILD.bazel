@@ -12,17 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "transactionclient",
-    srcs = ["transactionclient.go"],
+    srcs = [
+        "sqlite_client.go",
+        "transactionclient.go",
+    ],
     importpath = "ondc/shared/clients/transactionclient",
     visibility = ["//visibility:public"],
     deps = [
+        "//shared/storage",
         "@com_github_google_uuid//:uuid",
         "@com_github_googleapis_gax_go_v2//apierror",
         "@com_google_cloud_go_spanner//:spanner",
         "@org_golang_google_api//option",
+    ],
+)
+
+go_test(
+    name = "transactionclient_test",
+    srcs = ["sqlite_client_test.go"],
+    embed = [":transactionclient"],
+    deps = [
+        "//shared/storage",
     ],
 )

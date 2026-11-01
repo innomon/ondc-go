@@ -4,16 +4,21 @@ go_library(
     name = "storage",
     srcs = [
         "repository.go",
+        "sqlite_repository.go",
         "sqlite_schema.go",
     ],
     importpath = "ondc/shared/storage",
     visibility = ["//visibility:public"],
+    deps = [
+        "@org_modernc_sqlite//:sqlite",
+    ],
 )
 
 go_test(
     name = "storage_test",
     srcs = [
         "repository_test.go",
+        "sqlite_repository_test.go",
         "sqlite_schema_test.go",
     ],
     embed = [":storage"],
