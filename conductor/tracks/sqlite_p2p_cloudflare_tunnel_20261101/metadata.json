@@ -1,0 +1,8 @@
+{
+  "track_id": "sqlite_p2p_cloudflare_tunnel_20261101",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-11-01T13:38:00Z",
+  "updated_at": "2026-11-01T13:38:00Z",
+  "description": "Integrate sqlite-p2p persistence and Cloudflare Tunnel local deployment"
+}
