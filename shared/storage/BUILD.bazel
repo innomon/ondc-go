@@ -2,13 +2,22 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "storage",
-    srcs = ["repository.go"],
+    srcs = [
+        "repository.go",
+        "sqlite_schema.go",
+    ],
     importpath = "ondc/shared/storage",
     visibility = ["//visibility:public"],
 )
 
 go_test(
     name = "storage_test",
-    srcs = ["repository_test.go"],
+    srcs = [
+        "repository_test.go",
+        "sqlite_schema_test.go",
+    ],
     embed = [":storage"],
+    deps = [
+        "@org_modernc_sqlite//:sqlite",
+    ],
 )
