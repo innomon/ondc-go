@@ -22,7 +22,7 @@ func TestExtractInfoFromHeaderSuccess(t *testing.T) {
 	const exampleHeader = `Signature keyId="example-bg.com|bg3456|ed25519",algorithm="ed25519",created="1641287875",expires="1641291475",headers="(created) (expires) digest",signature="cjbhP0PFyrlSCNszJM1F/YmHDVAWsZqJUPzojnE/7TJU3fJ/rmIlgaUHEr5E0/2PIyf0tpSnWtT6cyNNlpmoAQ=="`
 	got, err := ExtractInfoFromHeader(exampleHeader)
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatalf("%v", err)
 	}
 
 	want := Info{
