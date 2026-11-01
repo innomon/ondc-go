@@ -1,0 +1,8 @@
+{
+  "track_id": "sqlite_p2p_discovery_sync_20261101",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-11-01T20:15:45+05:30",
+  "updated_at": "2026-11-01T20:15:45+05:30",
+  "description": "Implement P2P peer discovery and sync protocol for sqlite-p2p nodes"
+}
