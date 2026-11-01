@@ -33,11 +33,11 @@ Replace direct Cloud Spanner dependencies with the new sqlite-p2p storage interf
 ## Phase 3: Cloudflare Tunnel Local Deployment Setup & Verification
 Provide configurations, scripts, and documentation for deploying ONDC services locally with Cloudflare Tunnel ingress.
 
-- [~] Task: Create Cloudflare Tunnel Configuration & Launch Scripts
-    - [ ] Subtask: Write failing tests or validation scripts verifying `cloudflared` configuration parsing and port mappings
-    - [ ] Subtask: Implement `config/cloudflared/config.yaml.template` and `scripts/run_local_tunnel.sh` mapping BAP, BPP, and Onboarding endpoints
-    - [ ] Subtask: Verify configuration validation passes
-- [ ] Task: End-to-End Local Ingress & ONDC Challenge Verification Test
+- [x] Task: Create Cloudflare Tunnel Configuration & Launch Scripts (aa9296b)
+    - [x] Subtask: Write failing tests or validation scripts verifying `cloudflared` configuration parsing and port mappings
+    - [x] Subtask: Implement `config/cloudflared/config.yaml.template` and `scripts/run_local_tunnel.sh` mapping BAP, BPP, and Onboarding endpoints
+    - [x] Subtask: Verify configuration validation passes
+- [~] Task: End-to-End Local Ingress & ONDC Challenge Verification Test
     - [ ] Subtask: Write an automated integration test verifying local `/ondc-site-verification.html` and mock callback receipt over configured ingress
     - [ ] Subtask: Implement mock test runner verifying local buyer and seller adapter roundtrip with sqlite-p2p persistence
     - [ ] Subtask: Verify integration test suite passes
