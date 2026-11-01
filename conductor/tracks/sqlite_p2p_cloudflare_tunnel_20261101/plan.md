@@ -37,8 +37,8 @@ Provide configurations, scripts, and documentation for deploying ONDC services l
     - [x] Subtask: Write failing tests or validation scripts verifying `cloudflared` configuration parsing and port mappings
     - [x] Subtask: Implement `config/cloudflared/config.yaml.template` and `scripts/run_local_tunnel.sh` mapping BAP, BPP, and Onboarding endpoints
     - [x] Subtask: Verify configuration validation passes
-- [~] Task: End-to-End Local Ingress & ONDC Challenge Verification Test
-    - [ ] Subtask: Write an automated integration test verifying local `/ondc-site-verification.html` and mock callback receipt over configured ingress
-    - [ ] Subtask: Implement mock test runner verifying local buyer and seller adapter roundtrip with sqlite-p2p persistence
-    - [ ] Subtask: Verify integration test suite passes
+- [x] Task: End-to-End Local Ingress & ONDC Challenge Verification Test (8361a95)
+    - [x] Subtask: Write an automated integration test verifying local `/ondc-site-verification.html` and mock callback receipt over configured ingress
+    - [x] Subtask: Implement mock test runner verifying local buyer and seller adapter roundtrip with sqlite-p2p persistence
+    - [x] Subtask: Verify integration test suite passes
 - [ ] Task: Conductor - User Manual Verification 'Cloudflare Tunnel Local Deployment Setup & Verification' (Protocol in workflow.md)
