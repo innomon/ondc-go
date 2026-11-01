@@ -11,10 +11,10 @@ Define the unified storage interface, construct SQLite schema migrations, and im
     - [x] Subtask: Write failing unit tests validating schema initialization, table creation, and constraints
     - [x] Subtask: Implement SQLite DDL statements for `transactions` and `registrations` tables with index definitions
     - [x] Subtask: Verify schema migration tests pass successfully
-- [ ] Task: Implement sqlite-p2p Repository Driver
-    - [ ] Subtask: Write failing unit tests for sqlite-p2p database connection, CRUD operations, and transaction query helpers
-    - [ ] Subtask: Integrate `github.com/innomon/sqlite-p2p` client and implement repository methods with thread-safe SQLite connection handling
-    - [ ] Subtask: Verify tests pass with >80% test coverage
+- [x] Task: Implement sqlite-p2p Repository Driver 12259e2
+    - [x] Subtask: Write failing unit tests for sqlite-p2p database connection, CRUD operations, and transaction query helpers
+    - [x] Subtask: Integrate `github.com/innomon/sqlite-p2p` client and implement repository methods with thread-safe SQLite connection handling
+    - [x] Subtask: Verify tests pass with >80% test coverage
 - [ ] Task: Conductor - User Manual Verification 'Storage Layer Abstraction and sqlite-p2p Repository' (Protocol in workflow.md)
 
 ## Phase 2: Decouple Cloud Spanner & Refactor Platform Adapters
