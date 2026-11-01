@@ -24,10 +24,10 @@ Replace direct Cloud Spanner dependencies with the new sqlite-p2p storage interf
     - [x] Subtask: Write failing unit and mock tests for `bap-adapter-service` and `request-action-service` verifying persistence via `storage.Repository`
     - [x] Subtask: Replace Spanner client instances with `storage.Repository` in buyer platform services
     - [x] Subtask: Verify all buyer platform tests pass with >80% coverage
-- [~] Task: Refactor Seller Platform Storage Calls
-    - [ ] Subtask: Write failing unit and mock tests for `seller-adapter-service` and `callback-action-service` verifying persistence via `storage.Repository`
-    - [ ] Subtask: Replace Spanner client instances with `storage.Repository` in seller platform services
-    - [ ] Subtask: Verify all seller platform tests pass with >80% coverage
+- [x] Task: Refactor Seller Platform Storage Calls (ee734df)
+    - [x] Subtask: Write failing unit and mock tests for `seller-adapter-service` and `callback-action-service` verifying persistence via `storage.Repository`
+    - [x] Subtask: Replace Spanner client instances with `storage.Repository` in seller platform services
+    - [x] Subtask: Verify all seller platform tests pass with >80% coverage
 - [ ] Task: Conductor - User Manual Verification 'Decouple Cloud Spanner & Refactor Platform Adapters' (Protocol in workflow.md)
 
 ## Phase 3: Cloudflare Tunnel Local Deployment Setup & Verification
