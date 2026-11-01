@@ -41,4 +41,4 @@ Provide configurations, scripts, and documentation for deploying ONDC services l
     - [x] Subtask: Write an automated integration test verifying local `/ondc-site-verification.html` and mock callback receipt over configured ingress
     - [x] Subtask: Implement mock test runner verifying local buyer and seller adapter roundtrip with sqlite-p2p persistence
     - [x] Subtask: Verify integration test suite passes
-- [ ] Task: Conductor - User Manual Verification 'Cloudflare Tunnel Local Deployment Setup & Verification' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Cloudflare Tunnel Local Deployment Setup & Verification' (Protocol in workflow.md)
