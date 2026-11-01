@@ -1,0 +1,30 @@
+# Cloudflare Tunnel Configuration for Local ONDC Environment
+# Replace TUNNEL_ID and credentials file path with your Cloudflare Tunnel details,
+# or launch with: cloudflared tunnel --config <path_to_config> run <tunnel_name_or_id>
+
+tunnel: ${TUNNEL_ID}
+credentials-file: ${CREDENTIALS_FILE}
+
+ingress:
+  # Ingress to Onboarding site verification
+  - hostname: ${TUNNEL_HOSTNAME}
+    path: /ondc-site-verification.html
+    service: http://localhost:${ONBOARDING_PORT:-8080}
+
+  # Ingress to Onboarding APIs (/on_subscribe)
+  - hostname: ${TUNNEL_HOSTNAME}
+    path: /onboarding/*
+    service: http://localhost:${ONBOARDING_PORT:-8080}
+
+  # Ingress to Buyer Platform APIs (BAP callback endpoints)
+  - hostname: ${TUNNEL_HOSTNAME}
+    path: /bap/*
+    service: http://localhost:${BAP_PORT:-8081}
+
+  # Ingress to Seller Platform APIs (BPP callback & action endpoints)
+  - hostname: ${TUNNEL_HOSTNAME}
+    path: /bpp/*
+    service: http://localhost:${BPP_PORT:-8082}
+
+  # Default fallback 404 rule required by Cloudflare Tunnel
+  - service: http_status:404
