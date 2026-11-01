@@ -241,3 +241,62 @@ func TestSQLiteRepository_Errors(t *testing.T) {
 		t.Errorf("expected ErrNotFound, got %v", err)
 	}
 }
+
+type mockTracker struct {
+	mutations []string
+}
+
+func (m *mockTracker) RecordMutation(ctx context.Context, table, entityID, op, payload string) error {
+	m.mutations = append(m.mutations, table+":"+entityID+":"+op)
+	return nil
+}
+
+func TestSQLiteRepository_ChangeTrackerHook(t *testing.T) {
+	ctx := context.Background()
+	repo, err := storage.NewSQLiteRepository(storage.SQLiteOptions{
+		DBPath: ":memory:",
+	})
+	if err != nil {
+		t.Fatalf("failed to create repo: %v", err)
+	}
+	defer repo.Close()
+
+	tracker := &mockTracker{}
+	repo.SetChangeTracker(tracker)
+
+	tx := storage.TransactionRecord{
+		TransactionID:   "tx-mock",
+		TransactionType: "BAP",
+		TransactionAPI:  "search",
+		MessageID:       "msg-mock",
+		RequestID:       "req-mock",
+		Payload:         `{"test":true}`,
+		ProviderID:      "prv-1",
+	}
+	if err := repo.SaveTransaction(ctx, tx); err != nil {
+		t.Fatalf("SaveTransaction failed: %v", err)
+	}
+
+	reg := storage.RegistrationRecord{
+		RegistrationID:  "reg-mock",
+		ONDCEnvironment: "STAGING",
+		ONDCRegistryURL: "https://reg.ondc.org",
+		EntityName:      "Test",
+		SubscriberID:    "sub-mock",
+		SubscriberURL:   "https://sub.mock/bap",
+	}
+	if err := repo.SaveRegistration(ctx, reg); err != nil {
+		t.Fatalf("SaveRegistration failed: %v", err)
+	}
+
+	if len(tracker.mutations) != 2 {
+		t.Fatalf("expected 2 mutations recorded, got %d", len(tracker.mutations))
+	}
+	if tracker.mutations[0] != "transactions:tx-mock:BAP:msg-mock:req-mock:INSERT" {
+		t.Errorf("unexpected tx mutation: %s", tracker.mutations[0])
+	}
+	if tracker.mutations[1] != "registrations:reg-mock:INSERT" {
+		t.Errorf("unexpected reg mutation: %s", tracker.mutations[1])
+	}
+}
+

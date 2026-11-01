@@ -17,6 +17,7 @@ package storage
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -36,8 +37,14 @@ type SQLiteOptions struct {
 
 // SQLiteRepository provides an embedded SQLite implementation of Repository.
 type SQLiteRepository struct {
-	db     *sql.DB
-	ownsDB bool
+	db            *sql.DB
+	ownsDB        bool
+	changeTracker ChangeTracker
+}
+
+// SetChangeTracker attaches a change tracker for recording mutation events.
+func (r *SQLiteRepository) SetChangeTracker(tracker ChangeTracker) {
+	r.changeTracker = tracker
 }
 
 // Ensure SQLiteRepository satisfies the Repository interface.
@@ -150,6 +157,14 @@ func (r *SQLiteRepository) SaveTransaction(ctx context.Context, tx TransactionRe
 	)
 	if err != nil {
 		return fmt.Errorf("save transaction: %w", err)
+	}
+
+	if r.changeTracker != nil {
+		entityID := fmt.Sprintf("%s:%s:%s:%s", tx.TransactionID, tx.TransactionType, tx.MessageID, tx.RequestID)
+		payloadBytes, err := json.Marshal(tx)
+		if err == nil {
+			_ = r.changeTracker.RecordMutation(ctx, "transactions", entityID, "INSERT", string(payloadBytes))
+		}
 	}
 
 	return nil
@@ -318,6 +333,14 @@ func (r *SQLiteRepository) SaveRegistration(ctx context.Context, reg Registratio
 	)
 	if err != nil {
 		return fmt.Errorf("save registration: %w", err)
+	}
+
+	if r.changeTracker != nil {
+		entityID := reg.RegistrationID
+		payloadBytes, err := json.Marshal(reg)
+		if err == nil {
+			_ = r.changeTracker.RecordMutation(ctx, "registrations", entityID, "INSERT", string(payloadBytes))
+		}
 	}
 
 	return nil

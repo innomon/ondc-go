@@ -106,3 +106,8 @@ type Repository interface {
 	// Close terminates any open database resources.
 	Close() error
 }
+
+// ChangeTracker records mutation operations on stored entities for distributed sync.
+type ChangeTracker interface {
+	RecordMutation(ctx context.Context, table, entityID, operation, payload string) error
+}

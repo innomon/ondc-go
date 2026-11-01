@@ -128,3 +128,15 @@ func TestPeerRegistry_Remove(t *testing.T) {
 		t.Errorf("expected node-1 to be removed")
 	}
 }
+
+func TestPeerRegistry_ListAll(t *testing.T) {
+	reg := NewPeerRegistry(time.Minute)
+	reg.Register(PeerInfo{ID: "node-1", State: PeerStateActive})
+	reg.Register(PeerInfo{ID: "node-2", State: PeerStateDisconnected})
+
+	all := reg.ListAll()
+	if len(all) != 2 {
+		t.Fatalf("expected 2 peers in ListAll, got %d", len(all))
+	}
+}
+
