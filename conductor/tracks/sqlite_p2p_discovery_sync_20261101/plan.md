@@ -3,11 +3,11 @@
 ## Phase 1: Peer Discovery & Membership Management
 Establish peer discovery mechanisms, membership state tracking, and periodic liveness heartbeats.
 
-- [ ] Task: Implement Peer Registry and Liveness Model
-    - [ ] Subtask: Write failing unit tests for Peer Registry (add, remove, list active, liveness eviction)
-    - [ ] Subtask: Implement `shared/p2p/peer_registry.go` with thread-safe peer state management
-    - [ ] Subtask: Verify test coverage >80%
-- [ ] Task: Implement Hybrid Peer Discovery (mDNS & Static Seeds)
+- [x] Task: Implement Peer Registry and Liveness Model (fecffba)
+    - [x] Subtask: Write failing unit tests for Peer Registry (add, remove, list active, liveness eviction)
+    - [x] Subtask: Implement `shared/p2p/peer_registry.go` with thread-safe peer state management
+    - [x] Subtask: Verify test coverage >80%
+- [~] Task: Implement Hybrid Peer Discovery (mDNS & Static Seeds)
     - [ ] Subtask: Write failing unit tests for static seed resolution and mock mDNS advertisement/discovery
     - [ ] Subtask: Implement `shared/p2p/discovery.go` with static seed pinging and local network discovery
     - [ ] Subtask: Verify discovery tests pass with >80% coverage
