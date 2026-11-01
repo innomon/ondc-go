@@ -28,12 +28,12 @@ Replace direct Cloud Spanner dependencies with the new sqlite-p2p storage interf
     - [x] Subtask: Write failing unit and mock tests for `seller-adapter-service` and `callback-action-service` verifying persistence via `storage.Repository`
     - [x] Subtask: Replace Spanner client instances with `storage.Repository` in seller platform services
     - [x] Subtask: Verify all seller platform tests pass with >80% coverage
-- [ ] Task: Conductor - User Manual Verification 'Decouple Cloud Spanner & Refactor Platform Adapters' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Decouple Cloud Spanner & Refactor Platform Adapters' (Protocol in workflow.md)
 
 ## Phase 3: Cloudflare Tunnel Local Deployment Setup & Verification
 Provide configurations, scripts, and documentation for deploying ONDC services locally with Cloudflare Tunnel ingress.
 
-- [ ] Task: Create Cloudflare Tunnel Configuration & Launch Scripts
+- [~] Task: Create Cloudflare Tunnel Configuration & Launch Scripts
     - [ ] Subtask: Write failing tests or validation scripts verifying `cloudflared` configuration parsing and port mappings
     - [ ] Subtask: Implement `config/cloudflared/config.yaml.template` and `scripts/run_local_tunnel.sh` mapping BAP, BPP, and Onboarding endpoints
     - [ ] Subtask: Verify configuration validation passes
