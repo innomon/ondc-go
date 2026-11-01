@@ -3,10 +3,10 @@
 ## Phase 1: Storage Layer Abstraction and sqlite-p2p Repository
 Define the unified storage interface, construct SQLite schema migrations, and implement the `sqlite-p2p` repository driver.
 
-- [ ] Task: Define Storage & Repository Interfaces
-    - [ ] Subtask: Write failing unit tests defining expected repository behaviors for transaction logs and participant registrations
-    - [ ] Subtask: Implement `storage.Repository` interface with `SaveTransaction`, `GetTransaction`, `SaveRegistration`, and `GetRegistration` methods
-    - [ ] Subtask: Verify unit tests pass and ensure interface satisfies clean architecture principles
+- [x] Task: Define Storage & Repository Interfaces c47dc4c
+    - [x] Subtask: Write failing unit tests defining expected repository behaviors for transaction logs and participant registrations
+    - [x] Subtask: Implement `storage.Repository` interface with `SaveTransaction`, `GetTransaction`, `SaveRegistration`, and `GetRegistration` methods
+    - [x] Subtask: Verify unit tests pass and ensure interface satisfies clean architecture principles
 - [ ] Task: Implement SQLite Schema & Migrations
     - [ ] Subtask: Write failing unit tests validating schema initialization, table creation, and constraints
     - [ ] Subtask: Implement SQLite DDL statements for `transactions` and `registrations` tables with index definitions
