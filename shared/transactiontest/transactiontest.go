@@ -19,7 +19,10 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"testing"
+
+	"ondc/shared/clients/transactionclient"
 
 	database "cloud.google.com/go/spanner/admin/database/apiv1"
 	databasepb "cloud.google.com/go/spanner/admin/database/apiv1/databasepb"
@@ -29,13 +32,23 @@ import (
 	"google.golang.org/grpc"
 )
 
-// NewDatabase create a new fake Cloud Spanner database for storing transaction data.
+// NewDatabase create a new fake database for storing transaction data.
+// If SPANNER_EMULATOR_ADDRESS is not set, or if databaseID does not specify Spanner,
+// it falls back to a transient SQLite database ("sqlite::memory:") so that tests run hermetically.
 func NewDatabase(ctx context.Context, t *testing.T, projectID, instanceID, databaseID string) []option.ClientOption {
 	t.Helper()
 
 	addr, ok := os.LookupEnv("SPANNER_EMULATOR_ADDRESS")
-	if !ok {
-		addr = "localhost:9010" // default: gRPC default
+	if !ok || strings.HasPrefix(databaseID, "sqlite:") {
+		// When no Spanner emulator is active, register databaseID to use SQLite client
+		dbKey := strings.Split(databaseID, ":")[0]
+		if dbKey != "sqlite" {
+			// Register this databaseID in txnClientReg if not already registered
+			transactionclient.RegisterTransactionClient(dbKey, func(ctx context.Context, projectID, instanceID, databaseID string) (transactionclient.Client, error) {
+				return transactionclient.New(ctx, projectID, instanceID, "sqlite::memory:")
+			})
+		}
+		return nil
 	}
 
 	opts := []option.ClientOption{

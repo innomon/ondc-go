@@ -66,10 +66,16 @@ func NewSQLiteRepository(opts SQLiteOptions) (*SQLiteRepository, error) {
 		}
 
 		var err error
-		db, err = sql.Open("sqlite", opts.DBPath)
+		dbPath := opts.DBPath
+		if dbPath != ":memory:" && !strings.Contains(dbPath, "?") {
+			dbPath += "?_busy_timeout=5000"
+		}
+		db, err = sql.Open("sqlite", dbPath)
 		if err != nil {
 			return nil, fmt.Errorf("open sqlite database: %w", err)
 		}
+		// Limit open connections to 1 for write serialization or configure busy timeout
+		db.SetMaxOpenConns(1)
 		ownsDB = true
 	}
 
