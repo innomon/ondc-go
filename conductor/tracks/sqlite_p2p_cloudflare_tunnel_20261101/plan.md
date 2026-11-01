@@ -7,10 +7,10 @@ Define the unified storage interface, construct SQLite schema migrations, and im
     - [x] Subtask: Write failing unit tests defining expected repository behaviors for transaction logs and participant registrations
     - [x] Subtask: Implement `storage.Repository` interface with `SaveTransaction`, `GetTransaction`, `SaveRegistration`, and `GetRegistration` methods
     - [x] Subtask: Verify unit tests pass and ensure interface satisfies clean architecture principles
-- [ ] Task: Implement SQLite Schema & Migrations
-    - [ ] Subtask: Write failing unit tests validating schema initialization, table creation, and constraints
-    - [ ] Subtask: Implement SQLite DDL statements for `transactions` and `registrations` tables with index definitions
-    - [ ] Subtask: Verify schema migration tests pass successfully
+- [x] Task: Implement SQLite Schema & Migrations 1a4b7a3
+    - [x] Subtask: Write failing unit tests validating schema initialization, table creation, and constraints
+    - [x] Subtask: Implement SQLite DDL statements for `transactions` and `registrations` tables with index definitions
+    - [x] Subtask: Verify schema migration tests pass successfully
 - [ ] Task: Implement sqlite-p2p Repository Driver
     - [ ] Subtask: Write failing unit tests for sqlite-p2p database connection, CRUD operations, and transaction query helpers
     - [ ] Subtask: Integrate `github.com/innomon/sqlite-p2p` client and implement repository methods with thread-safe SQLite connection handling
