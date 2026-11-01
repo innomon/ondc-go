@@ -20,10 +20,10 @@ Implement change log capture, vector/logical timestamps, delta packaging, and de
     - [x] Subtask: Write failing tests for mutation tracking and Lamport clock increments on transaction/registration writes
     - [x] Subtask: Implement `shared/p2p/changelog.go` and integrate mutation recording with `shared/storage/sqlite_repository.go`
     - [x] Subtask: Verify changelog tracking tests pass with >80% coverage
-- [ ] Task: Implement P2P Sync Protocol & Conflict Resolver
-    - [ ] Subtask: Write failing tests for push/pull delta sync and Last-Write-Wins (LWW) conflict resolution
-    - [ ] Subtask: Implement `shared/p2p/sync_service.go` handling sync handshakes, delta requests, and atomic apply
-    - [ ] Subtask: Verify sync engine tests pass with >80% coverage
+- [x] Task: Implement P2P Sync Protocol & Conflict Resolver (2d5837f)
+    - [x] Subtask: Write failing tests for push/pull delta sync and Last-Write-Wins (LWW) conflict resolution
+    - [x] Subtask: Implement `shared/p2p/sync_service.go` handling sync handshakes, delta requests, and atomic apply
+    - [x] Subtask: Verify sync engine tests pass with >80% coverage
 - [ ] Task: Conductor - User Manual Verification 'Change Tracking, Conflict Resolution & Sync Protocol' (Protocol in workflow.md)
 
 ## Phase 3: Transport Security, Status Observability & End-to-End Integration
