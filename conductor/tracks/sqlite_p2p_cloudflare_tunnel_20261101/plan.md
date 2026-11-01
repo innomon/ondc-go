@@ -20,11 +20,11 @@ Define the unified storage interface, construct SQLite schema migrations, and im
 ## Phase 2: Decouple Cloud Spanner & Refactor Platform Adapters
 Replace direct Cloud Spanner dependencies with the new sqlite-p2p storage interface across Buyer and Seller platform adapters.
 
-- [ ] Task: Refactor Buyer Platform Storage Calls
-    - [ ] Subtask: Write failing unit and mock tests for `bap-adapter-service` and `request-action-service` verifying persistence via `storage.Repository`
-    - [ ] Subtask: Replace Spanner client instances with `storage.Repository` in buyer platform services
-    - [ ] Subtask: Verify all buyer platform tests pass with >80% coverage
-- [ ] Task: Refactor Seller Platform Storage Calls
+- [x] Task: Refactor Buyer Platform Storage Calls (c027c6a)
+    - [x] Subtask: Write failing unit and mock tests for `bap-adapter-service` and `request-action-service` verifying persistence via `storage.Repository`
+    - [x] Subtask: Replace Spanner client instances with `storage.Repository` in buyer platform services
+    - [x] Subtask: Verify all buyer platform tests pass with >80% coverage
+- [~] Task: Refactor Seller Platform Storage Calls
     - [ ] Subtask: Write failing unit and mock tests for `seller-adapter-service` and `callback-action-service` verifying persistence via `storage.Repository`
     - [ ] Subtask: Replace Spanner client instances with `storage.Repository` in seller platform services
     - [ ] Subtask: Verify all seller platform tests pass with >80% coverage
