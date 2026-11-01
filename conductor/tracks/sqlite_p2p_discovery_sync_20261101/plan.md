@@ -1,6 +1,6 @@
 # Implementation Plan - P2P Peer Discovery and Sync Protocol for sqlite-p2p Nodes
 
-## Phase 1: Peer Discovery & Membership Management
+## Phase 1: Peer Discovery & Membership Management [checkpoint: 3e61d5c]
 Establish peer discovery mechanisms, membership state tracking, and periodic liveness heartbeats.
 
 - [x] Task: Implement Peer Registry and Liveness Model (fecffba)
@@ -11,7 +11,7 @@ Establish peer discovery mechanisms, membership state tracking, and periodic liv
     - [x] Subtask: Write failing unit tests for static seed resolution and mock mDNS advertisement/discovery
     - [x] Subtask: Implement `shared/p2p/discovery.go` with static seed pinging and local network discovery
     - [x] Subtask: Verify discovery tests pass with >80% coverage
-- [ ] Task: Conductor - User Manual Verification 'Peer Discovery & Membership Management' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Peer Discovery & Membership Management' (3e61d5c)
 
 ## Phase 2: Change Tracking, Conflict Resolution & Sync Protocol
 Implement change log capture, vector/logical timestamps, delta packaging, and deterministic conflict resolution.
