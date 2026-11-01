@@ -7,10 +7,10 @@ Establish peer discovery mechanisms, membership state tracking, and periodic liv
     - [x] Subtask: Write failing unit tests for Peer Registry (add, remove, list active, liveness eviction)
     - [x] Subtask: Implement `shared/p2p/peer_registry.go` with thread-safe peer state management
     - [x] Subtask: Verify test coverage >80%
-- [~] Task: Implement Hybrid Peer Discovery (mDNS & Static Seeds)
-    - [ ] Subtask: Write failing unit tests for static seed resolution and mock mDNS advertisement/discovery
-    - [ ] Subtask: Implement `shared/p2p/discovery.go` with static seed pinging and local network discovery
-    - [ ] Subtask: Verify discovery tests pass with >80% coverage
+- [x] Task: Implement Hybrid Peer Discovery (mDNS & Static Seeds) (46b26d3)
+    - [x] Subtask: Write failing unit tests for static seed resolution and mock mDNS advertisement/discovery
+    - [x] Subtask: Implement `shared/p2p/discovery.go` with static seed pinging and local network discovery
+    - [x] Subtask: Verify discovery tests pass with >80% coverage
 - [ ] Task: Conductor - User Manual Verification 'Peer Discovery & Membership Management' (Protocol in workflow.md)
 
 ## Phase 2: Change Tracking, Conflict Resolution & Sync Protocol
