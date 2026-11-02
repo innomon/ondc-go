@@ -24,8 +24,8 @@
     - [x] Subtask: Delete `terraform/modules/internal/spanner`
     - [x] Subtask: Remove Spanner resources, variables, and IAM bindings from `terraform/modules/buyer`, `terraform/modules/seller`, and `terraform/examples/sample`
     - [x] Subtask: Update deployment config templates (`bap-apis-config.yaml`, `seller-adapter-config.yaml`, etc.) to remove Spanner instance/database fields
-- [ ] Task: Clean documentation, comments, and perform final repository audit
-    - [ ] Subtask: Remove obsolete Spanner references and instructions across documentation and code comments
-    - [ ] Subtask: Verify `grep -ri "spanner" .` produces zero active code or build references
-    - [ ] Subtask: Execute full test suite `go test -v -race ./...`
+- [x] Task: Clean documentation, comments, and perform final repository audit 0909311
+    - [x] Subtask: Remove obsolete Spanner references and instructions across documentation and code comments
+    - [x] Subtask: Verify `grep -ri "spanner" .` produces zero active code or build references
+    - [x] Subtask: Execute full test suite `go test -v -race ./...`
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Infrastructure, Manifests & Documentation Cleanup' (Protocol in workflow.md)
