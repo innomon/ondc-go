@@ -1,6 +1,6 @@
 # Implementation Plan: Standalone SQLite-P2P Auto-Replication Bridge Service
 
-## Phase 1: Configuration & Bridge Daemon Core Engine
+## Phase 1: Configuration & Bridge Daemon Core Engine [checkpoint: ab3df38]
 - [x] Task: Create `BridgeConfig` struct with flag and environment variable resolution (`shared/p2p/daemon_config.go`) [9b73618]
     - [x] Write unit tests for configuration resolution priority (CLI flags > ENV > Defaults) in `shared/p2p/daemon_config_test.go`
     - [x] Implement `LoadBridgeConfig(args []string, lookupEnv func(string) (string, bool))` supporting flags and env vars without spf13/cobra
@@ -10,7 +10,7 @@
 - [x] Task: Implement HTTP Health & Status server (`shared/p2p/daemon_http.go`) [aeffaf5]
     - [x] Write unit tests for `/healthz` and `/status` in `shared/p2p/daemon_http_test.go`
     - [x] Implement HTTP handler routes for health checks and daemon metrics
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Configuration & Bridge Daemon Core Engine' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Configuration & Bridge Daemon Core Engine' (Protocol in workflow.md) [ab3df38]
 
 ## Phase 2: Standalone CLI Binary & Bazel Target
 - [ ] Task: Implement `cmd/ondc-p2p-bridge/main.go` entrypoint
