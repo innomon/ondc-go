@@ -8,7 +8,7 @@
 - [x] Task: Refactor `shared/transactiontest` to remove Spanner Admin APIs and emulator hooks (56f6e7f)
     - [x] Subtask: Refactor `shared/transactiontest/transactiontest.go` to provision in-memory/temp SQLite test databases
     - [x] Subtask: Remove Spanner database and instance admin client code and emulator address checks
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Go Source Code & Test Harness Refactoring' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Go Source Code & Test Harness Refactoring' (Protocol in workflow.md)
 
 ## Phase 2: Dependency & Build System Purge
 - [ ] Task: Clean Go module dependencies
