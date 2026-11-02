@@ -1,0 +1,8 @@
+{
+  "track_id": "hybrid_structured_logging_20261102",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-11-02T19:04:00+05:30",
+  "updated_at": "2026-11-02T19:04:00+05:30",
+  "description": "Implement hybrid structured logging pattern with pure-Go log rotation, caller PC preservation, glog compatibility facade, and unified node CLI integration"
+}
