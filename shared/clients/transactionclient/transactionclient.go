@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package transactionclient provide a client for storing ONDC transaction on Cloud Spanner.
+// Package transactionclient provides a client for storing ONDC transactions in persistent storage.
 package transactionclient
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 	"time"
 
-	"cloud.google.com/go/spanner"
-	"github.com/google/uuid"
-	"github.com/googleapis/gax-go/v2/apierror"
 	"google.golang.org/api/option"
+	"ondc/shared/storage"
 )
 
 var (
@@ -58,7 +55,7 @@ var (
 	}
 )
 
-// TransactionData represent data of transaction logs.
+// TransactionData represents data of transaction logs.
 type TransactionData struct {
 	ID              string
 	Type            string
@@ -74,7 +71,7 @@ type TransactionData struct {
 	ReqReceivedTime time.Time
 }
 
-// Client for extending client storage beyond spanner
+// Client represents a persistent transaction storage client.
 type Client interface {
 	StoreTransaction(ctx context.Context, transaction TransactionData) error
 }
@@ -87,95 +84,29 @@ func RegisterTransactionClient(name string, clientFact ClientFactory) {
 	txnClientReg[name] = clientFact
 }
 
-// New creates a new transaction client.
+// New creates a new transaction client, defaulting to pure-Go embedded SQLite storage.
 func New(ctx context.Context, projectID, instanceID, databaseID string, opts ...option.ClientOption) (Client, error) {
-	if cfact, ok := txnClientReg[strings.Split(databaseID, ":")[0]]; ok {
+	dbKey := strings.Split(databaseID, ":")[0]
+	if cfact, ok := txnClientReg[dbKey]; ok {
 		return cfact(ctx, projectID, instanceID, databaseID)
 	}
-	// Default is spanner client
-	database := fmt.Sprintf("projects/%s/instances/%s/databases/%s", projectID, instanceID, databaseID)
-	spannerClient, err := spanner.NewClient(ctx, database, opts...)
-	if err != nil {
-		return nil, err
+
+	// Default to pure-Go SQLite storage
+	dbPath := databaseID
+	if strings.HasPrefix(dbPath, "sqlite:") {
+		dbPath = strings.TrimPrefix(dbPath, "sqlite:")
 	}
-	client := &SpannerClient{spannerClient: spannerClient}
-	return client, nil
-}
-
-// SpannerClient is a wrapper of Spanner Client for storing ONDC transaction logs.
-type SpannerClient struct {
-	spannerClient *spanner.Client
-}
-
-// StoreTransaction inserts the ONDC transaction details in the Spanner table.
-func (c *SpannerClient) StoreTransaction(ctx context.Context, transaction TransactionData) error {
-	typeCode, ok := transactionTypeMap[transaction.Type]
-	if !ok {
-		return fmt.Errorf("store transaction: invalid type %q", transaction.Type)
+	if dbPath == "" || dbPath == ":memory:" || (!strings.Contains(dbPath, "/") && !strings.HasSuffix(dbPath, ".db")) {
+		dbPath = ":memory:"
 	}
 
-	apiCode, ok := transactionAPIMap[transaction.API]
-	if !ok {
-		return fmt.Errorf("store transaction: invalid API %q", transaction.API)
-	}
-
-	_, err := c.spannerClient.ReadWriteTransaction(ctx, func(ctx context.Context, txn *spanner.ReadWriteTransaction) error {
-		stmt := spanner.Statement{
-			SQL: `
-			INSERT INTO Transaction (
-				TransactionID,
-				TransactionType,
-				TransactionAPI,
-				MessageID,
-				RequestID,
-				Payload,
-				ProviderID,
-				MessageStatus,
-				ErrorType,
-				ErrorCode,
-				ErrorPath,
-				ErrorMessage,
-				ReqReceivedTime
-			)
-			VALUES (
-				@transactionID,
-				@transactionType,
-				@transactionAPI,
-				@messageID,
-                @requestID,
-				@payload,
-				@providerID,
-				@messageStatus,
-				@errorType,
-				@errorCode,
-				@errorPath,
-				@errorMessage,
-				@reqReceivedTime
-			)`,
-			Params: map[string]any{
-				"transactionID":   transaction.ID,
-				"transactionType": typeCode,
-				"transactionAPI":  apiCode,
-				"messageID":       transaction.MessageID,
-				"requestID":       uuid.New().String(),
-				"payload":         spanner.NullJSON{Value: transaction.Payload, Valid: true},
-				"providerID":      transaction.ProviderID,
-				"messageStatus":   transaction.MessageStatus,
-				"errorType":       transaction.ErrorType,
-				"errorCode":       transaction.ErrorCode,
-				"errorPath":       transaction.ErrorPath,
-				"errorMessage":    transaction.ErrorMessage,
-				"reqReceivedTime": transaction.ReqReceivedTime,
-			},
-		}
-		_, err := txn.Update(ctx, stmt)
-		return err
+	repo, err := storage.NewSQLiteRepository(storage.SQLiteOptions{
+		DBPath:    dbPath,
+		EnableWAL: true,
 	})
 	if err != nil {
-		var ae *apierror.APIError
-		if errors.As(err, &ae) {
-			return fmt.Errorf("storing transaction failed: %s, %s", ae.Error(), ae.Details())
-		}
+		return nil, fmt.Errorf("init default sqlite transaction client: %w", err)
 	}
-	return err
+
+	return NewSQLiteClient(repo), nil
 }
