@@ -20,10 +20,10 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Dependency & Build System Purge' (Protocol in workflow.md)
 
 ## Phase 3: Infrastructure, Manifests & Documentation Cleanup
-- [ ] Task: Purge Spanner from Terraform modules and sample configurations
-    - [ ] Subtask: Delete `terraform/modules/internal/spanner`
-    - [ ] Subtask: Remove Spanner resources, variables, and IAM bindings from `terraform/modules/buyer`, `terraform/modules/seller`, and `terraform/examples/sample`
-    - [ ] Subtask: Update deployment config templates (`bap-apis-config.yaml`, `seller-adapter-config.yaml`, etc.) to remove Spanner instance/database fields
+- [x] Task: Purge Spanner from Terraform modules and sample configurations cfbf4d9
+    - [x] Subtask: Delete `terraform/modules/internal/spanner`
+    - [x] Subtask: Remove Spanner resources, variables, and IAM bindings from `terraform/modules/buyer`, `terraform/modules/seller`, and `terraform/examples/sample`
+    - [x] Subtask: Update deployment config templates (`bap-apis-config.yaml`, `seller-adapter-config.yaml`, etc.) to remove Spanner instance/database fields
 - [ ] Task: Clean documentation, comments, and perform final repository audit
     - [ ] Subtask: Remove obsolete Spanner references and instructions across documentation and code comments
     - [ ] Subtask: Verify `grep -ri "spanner" .` produces zero active code or build references
