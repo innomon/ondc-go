@@ -158,6 +158,27 @@ The discovery engine ([`/shared/p2p/discovery.go`](/shared/p2p/discovery.go)) op
 
    - The node actively probes seeds via authenticated `/p2p/ping` calls and registers responsive peers in the dynamic registry.
 
+### 4.3. sqlite-p2p Runtime Interoperability Bridge Setup
+
+When running in heterogeneous clusters where nodes interoperate with the [`sqlite-p2p`](https://github.com/innomon/sqlite-p2p) decentralized mesh:
+
+1. **Environment Variables:**
+   ```bash
+   # Primary relational SQLite DB
+   export ONDC_SQLITE_DB_PATH="/var/data/ondc/ondc.db"
+
+   # sqlite-p2p crm_store DB
+   export ONDC_SQLITE_P2P_CRM_PATH="/var/data/ondc/sqlite_p2p_crm.db"
+
+   # Bridge sync frequency
+   export ONDC_SQLITE_P2P_SYNC_INTERVAL="2s"
+   ```
+
+2. **Automatic Replication Behavior:**
+   - **Zero-touch Outbound Export:** Every write to `transactions` or `registrations` triggers change log generation. The bridge worker exports changesets directly to `crm_store` at the configured interval.
+   - **Zero-touch Inbound Ingestion:** Remote changesets arriving via the `sqlite-p2p` P2P gossip layer are ingested into `crm_store` and immediately reconciled into the ONDC relational schema via Lamport Last-Write-Wins (LWW) conflict resolution.
+   - **Health & Interop Status:** Inspect the active state via the `/p2p/status` endpoint to confirm peer replication latency and Lamport clock values.
+
 ### 4.3. Peer Mutual Authentication
 
 All replication calls (`/p2p/push`, `/p2p/pull`, `/p2p/ping`) enforce cryptographic mutual authentication:

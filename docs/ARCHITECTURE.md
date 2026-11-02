@@ -192,6 +192,119 @@ To ensure heterogeneous network deployments can seamlessly interoperate between 
 
 ---
 
+### 3.6. Runtime Synchronization & Automatic Replication with `sqlite-p2p`
+
+#### 3.6.1. Architecture & Data Flow
+
+At runtime, `ondc-go` nodes can sync bidirectionally with `sqlite-p2p` swarms without manual sync invocation:
+
+```mermaid
+flowchart TD
+    subgraph ONDC_Node["ONDC Go Node Runtime"]
+        CoreEngine["ONDC Core Engine<br/>(BAP / BPP / Registry)"]
+        SQLiteRepo["storage.SQLiteRepository<br/>(ondc.db / WAL)"]
+        Tracker["ChangeTracker & Lamport Clock<br/>(p2p_changelog)"]
+        SyncSvc["p2p.SyncService<br/>(LWW Conflict Resolution)"]
+        Bridge["p2p.SQLiteP2PBridge<br/>(shared/p2p/interop.go)"]
+    end
+
+    subgraph SQLite_P2P["sqlite-p2p Node / Replicator"]
+        CRMStore["crm_store Table<br/>(sqlite_p2p_crm.db)"]
+        Autobase["Autobase / Hypercore Feed<br/>(P2P Gossip Swarm)"]
+    end
+
+    RemotePeers["Remote P2P Mesh Peers<br/>(ONDC & sqlite-p2p Nodes)"]
+
+    CoreEngine -->|Save Transaction / Registration| SQLiteRepo
+    SQLiteRepo -->|Trigger Mutation| Tracker
+    Tracker -->|Append Change Record| Bridge
+    Bridge -->|ExportChangeset| CRMStore
+    CRMStore -->|Append Feed| Autobase
+    Autobase <-->|Gossip Replication| RemotePeers
+
+    RemotePeers -->|Pull / Ingest| Autobase
+    Autobase -->|Update| CRMStore
+    CRMStore -->|ImportChangeset| Bridge
+    Bridge -->|ApplyChangeBatch| SyncSvc
+    SyncSvc -->|LWW Converged Merge| SQLiteRepo
+```
+
+#### 3.6.2. Configuration & Runtime Integration
+
+Runtime synchronization is configured using environment variables and wired during node startup:
+
+```go
+package main
+
+import (
+    "context"
+    "database/sql"
+    "os"
+    "time"
+
+    _ "modernc.org/sqlite"
+    "github.com/innomon/ondc-go/shared/p2p"
+    "github.com/innomon/ondc-go/shared/storage"
+)
+
+func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    // 1. Initialize local ONDC relational database
+    dbPath := os.Getenv("ONDC_SQLITE_DB_PATH")
+    if dbPath == "" {
+        dbPath = "/var/data/ondc/ondc.db"
+    }
+    ondcDB, _ := sql.Open("sqlite", dbPath)
+    repo, _ := storage.NewSQLiteRepository(storage.SQLiteOptions{DB: ondcDB})
+
+    // 2. Open or create sqlite-p2p crm_store database
+    crmPath := os.Getenv("ONDC_SQLITE_P2P_CRM_PATH")
+    if crmPath == "" {
+        crmPath = "/var/data/ondc/sqlite_p2p_crm.db"
+    }
+    crmDB, _ := sql.Open("sqlite", crmPath)
+    _ = p2p.InitSQLiteP2PCRMStore(crmDB)
+
+    // 3. Initialize ONDC synchronization service
+    nodeID := os.Getenv("ONDC_NODE_ID")
+    syncSvc, _ := p2p.NewSyncService(p2p.SyncServiceConfig{
+        NodeID:       nodeID,
+        Repo:         repo,
+        Tracker:      repo.Tracker(),
+        SyncInterval: 2 * time.Second,
+        MaxBatchSize: 500,
+    })
+
+    // 4. Initialize bidirectional bridge
+    bridge := p2p.NewSQLiteP2PBridge(ondcDB, crmDB, repo.Tracker(), syncSvc)
+
+    // 5. Start autonomous replication background loop
+    go func() {
+        ticker := time.NewTicker(2 * time.Second)
+        defer ticker.Stop()
+        for {
+            select {
+            case <-ctx.Done():
+                return
+            case <-ticker.C:
+                _ = bridge.ExportToSQLiteP2P(ctx)
+                _ = bridge.ImportFromSQLiteP2P(ctx)
+            }
+        }
+    }()
+}
+```
+
+#### 3.6.3. Autonomous Replication Guarantees
+
+- **Fully Automatic Write-Through:** Local mutations executed through `storage.SQLiteRepository` immediately advance the Lamport clock and log changelog deltas. The background loop exports new records to `crm_store` on each tick.
+- **Hands-Free Inbound Merging:** Remote entries received via `sqlite-p2p` are ingested into `crm_store` and continuously translated into `ChangeRecord` batches.
+- **Deterministic Convergence:** Lamport Last-Write-Wins (LWW) conflict resolution ensures identical data convergence across all network peers, preventing overwrite loops or state divergence.
+
+---
+
 ## 4. End-to-End Verification
 
 The complete architecture is validated by automated integration and end-to-end tests:
