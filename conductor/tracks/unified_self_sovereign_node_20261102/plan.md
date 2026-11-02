@@ -1,12 +1,12 @@
 # Implementation Plan: Unified Self-Sovereign Node & AutoCert Daemon (`cmd/ondc-node`)
 
 ## Phase 1: Configuration, Core Server Engine & Route Multiplexing
-- [ ] Task: Write unit tests for unified node config resolution and router multiplexing (`shared/node/config_test.go`, `shared/node/router_test.go`)
-    - [ ] Test precedence: CLI flags > Environment variables > Defaults
-    - [ ] Test routing table: `/on_subscribe`, `/ondc-site-verification.html`, `/bap/*`, `/bpp/*`, `/p2p/*`, `/healthz`, `/status`
-- [ ] Task: Implement unified configuration and routing multiplexer (`shared/node/config.go`, `shared/node/router.go`)
-    - [ ] Implement `LoadNodeConfig` using standard library `flag` and environment resolution (no `spf13`)
-    - [ ] Implement `NewNodeMux` combining onboarding, buyer, seller, and P2P HTTP endpoints
+- [x] Task: Write unit tests for unified node config resolution and router multiplexing (`shared/node/config_test.go`, `shared/node/router_test.go`) [1c681b4]
+    - [x] Test precedence: CLI flags > Environment variables > Defaults
+    - [x] Test routing table: `/on_subscribe`, `/ondc-site-verification.html`, `/bap/*`, `/bpp/*`, `/p2p/*`, `/healthz`, `/status`
+- [x] Task: Implement unified configuration and routing multiplexer (`shared/node/config.go`, `shared/node/router.go`) [1c681b4]
+    - [x] Implement `LoadNodeConfig` using standard library `flag` and environment resolution (no `spf13`)
+    - [x] Implement `NewNodeMux` combining onboarding, buyer, seller, and P2P HTTP endpoints
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Configuration, Core Server Engine & Route Multiplexing' (Protocol in workflow.md)
 
 ## Phase 2: Network Listeners, Dual-Mode TLS (autocert) & Embedded P2P Bridge
