@@ -1,9 +1,9 @@
 package p2p
 
 import (
+	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"os"
 	"strconv"
 	"time"
@@ -76,7 +76,7 @@ func LoadBridgeConfig(args []string, lookupEnv func(string) (string, bool)) (*Br
 
 	// 3. Overlay Command-Line Flags (highest precedence)
 	fs := flag.NewFlagSet("ondc-p2p-bridge", flag.ContinueOnError)
-	fs.SetOutput(io.Discard)
+	fs.SetOutput(os.Stderr)
 
 	dbPathFlag := fs.String("db-path", defaultDBPath, "Path to the primary ONDC SQLite database")
 	crmPathFlag := fs.String("crm-path", defaultCRMPath, "Path to the sqlite-p2p crm_store SQLite database")
@@ -86,6 +86,9 @@ func LoadBridgeConfig(args []string, lookupEnv func(string) (string, bool)) (*Br
 	httpAddrFlag := fs.String("http-addr", defaultHTTPAddr, "Address to bind the HTTP status and healthcheck server")
 
 	if err := fs.Parse(args); err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			return nil, flag.ErrHelp
+		}
 		return nil, fmt.Errorf("failed to parse command-line flags: %w", err)
 	}
 
