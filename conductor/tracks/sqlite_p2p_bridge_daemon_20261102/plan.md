@@ -23,6 +23,6 @@
 ## Phase 3: End-to-End Integration Testing & Documentation
 - [x] Task: Write end-to-end integration test (`test/p2p_bridge_daemon_e2e_test.go`) [f4bc4fe]
     - [x] Spin up daemon against two test SQLite databases, write transactions to ONDC DB, verify automatic propagation to `crm_store`, write mutations to `crm_store`, verify automatic convergence in ONDC DB, and test graceful shutdown
-- [ ] Task: Update architecture and DevOps documentation
-    - [ ] Update `docs/ARCHITECTURE.md` and `docs/DEVOPS.md` with binary usage, systemd/Docker deployment, and configuration reference
+- [x] Task: Update architecture and DevOps documentation [675009e]
+    - [x] Update `docs/ARCHITECTURE.md` and `docs/DEVOPS.md` with binary usage, systemd/Docker deployment, and configuration reference
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: End-to-End Integration Testing & Documentation' (Protocol in workflow.md)
