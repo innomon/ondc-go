@@ -1,10 +1,10 @@
 # Implementation Plan: Remove All Cloud Spanner References
 
 ## Phase 1: Go Source Code & Test Harness Refactoring
-- [ ] Task: Refactor `shared/clients/transactionclient` to eliminate `SpannerClient`
-    - [ ] Subtask: Write unit tests in `shared/clients/transactionclient` validating transaction storage via `storage.Repository`
-    - [ ] Subtask: Remove `cloud.google.com/go/spanner` imports and `SpannerClient` struct
-    - [ ] Subtask: Update `transactionclient.NewClient` to use SQLite repository exclusively
+- [x] Task: Refactor `shared/clients/transactionclient` to eliminate `SpannerClient` (d5e15b0)
+    - [x] Subtask: Write unit tests in `shared/clients/transactionclient` validating transaction storage via `storage.Repository`
+    - [x] Subtask: Remove `cloud.google.com/go/spanner` imports and `SpannerClient` struct
+    - [x] Subtask: Update `transactionclient.NewClient` to use SQLite repository exclusively
 - [ ] Task: Refactor `shared/transactiontest` to remove Spanner Admin APIs and emulator hooks
     - [ ] Subtask: Refactor `shared/transactiontest/transactiontest.go` to provision in-memory/temp SQLite test databases
     - [ ] Subtask: Remove Spanner database and instance admin client code and emulator address checks
