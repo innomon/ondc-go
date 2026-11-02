@@ -21,3 +21,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: create the Application Bootstrap Wiring as discussed above, to auto replicate between ondc-go and sqlite-p2p, no hardcoded variables create a standalone service**
   *Link: [./tracks/archive/sqlite_p2p_bridge_daemon_20261102/](./tracks/archive/sqlite_p2p_bridge_daemon_20261102/)*
+
+---
+
+- [ ] **Track: while running the project as self soverign deployment mode, it can either run as a cloudflare tunnel (befind the firewall) or in a standalone VM exposed to internet. in both these configurations, we want to run a single unified server, with multiple entrypoints. All the components including onboarding, buyer, seller and sqlite-p2p replicator, will run from a single executable.**
+  *Link: [./tracks/unified_self_sovereign_node_20261102/](./tracks/unified_self_sovereign_node_20261102/)*

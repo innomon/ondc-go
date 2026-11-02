@@ -1,0 +1,8 @@
+{
+  "track_id": "unified_self_sovereign_node_20261102",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-11-02T18:00:40+05:30",
+  "updated_at": "2026-11-02T18:00:40+05:30",
+  "description": "Unified self sovereign deployment node running all components (onboarding, buyer, seller, sqlite-p2p replicator) from a single executable supporting Cloudflare Tunnel and standalone VM with autocert TLS"
+}
