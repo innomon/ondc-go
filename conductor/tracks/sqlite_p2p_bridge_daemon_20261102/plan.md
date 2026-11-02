@@ -4,9 +4,9 @@
 - [x] Task: Create `BridgeConfig` struct with flag and environment variable resolution (`shared/p2p/daemon_config.go`) [9b73618]
     - [x] Write unit tests for configuration resolution priority (CLI flags > ENV > Defaults) in `shared/p2p/daemon_config_test.go`
     - [x] Implement `LoadBridgeConfig(args []string, lookupEnv func(string) (string, bool))` supporting flags and env vars without spf13/cobra
-- [ ] Task: Implement `BridgeDaemon` engine with background loop & metrics (`shared/p2p/daemon.go`)
-    - [ ] Write unit tests for `BridgeDaemon` lifecycle, sync step execution, and error handling in `shared/p2p/daemon_test.go`
-    - [ ] Implement `BridgeDaemon` struct with `Start(ctx context.Context)`, `Stop()`, `SyncOnce(ctx context.Context)`, and stats tracking
+- [x] Task: Implement `BridgeDaemon` engine with background loop & metrics (`shared/p2p/daemon.go`) [602b4d2]
+    - [x] Write unit tests for `BridgeDaemon` lifecycle, sync step execution, and error handling in `shared/p2p/daemon_test.go`
+    - [x] Implement `BridgeDaemon` struct with `Start(ctx context.Context)`, `Stop()`, `SyncOnce(ctx context.Context)`, and stats tracking
 - [ ] Task: Implement HTTP Health & Status server (`shared/p2p/daemon_http.go`)
     - [ ] Write unit tests for `/healthz` and `/status` in `shared/p2p/daemon_http_test.go`
     - [ ] Implement HTTP handler routes for health checks and daemon metrics
