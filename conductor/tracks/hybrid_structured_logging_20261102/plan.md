@@ -6,9 +6,9 @@
     - [x] Test backup pruning adhering to `maxBackups`
     - [x] Test thread safety under concurrent writes
     - [x] Test `MultiHandler` routing to multiple downstream handlers with level filtering
-- [~] Task: Implement `LogRotator` and `MultiHandler` (`shared/logging/rotator.go`, `shared/logging/handler.go`)
-    - [ ] Implement thread-safe `LogRotator` (`io.Writer` and `io.Closer`)
-    - [ ] Implement `MultiHandler` adhering to `slog.Handler`
+- [x] Task: Implement `LogRotator` and `MultiHandler` (`shared/logging/rotator.go`, `shared/logging/handler.go`) [e0b9506]
+    - [x] Implement thread-safe `LogRotator` (`io.Writer` and `io.Closer`)
+    - [x] Implement `MultiHandler` adhering to `slog.Handler`
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Core Engine: LogRotator & MultiHandler' (Protocol in workflow.md)
 
 ## Phase 2: Hybrid Logger APIs & Drop-in `glog` Compatibility Facade
