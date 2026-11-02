@@ -29,10 +29,10 @@ Implement change log capture, vector/logical timestamps, delta packaging, and de
 ## Phase 3: Transport Security, Status Observability & End-to-End Integration
 Secure P2P channels with Ed25519 participant keys, expose status endpoints, and write multi-node sync integration tests.
 
-- [ ] Task: Ed25519 Peer Authentication & Secure Handshake
-    - [ ] Subtask: Write failing tests verifying signed handshake verification using ONDC participant Ed25519 keys
-    - [ ] Subtask: Implement secure peer handshake verifier in `shared/p2p/auth.go`
-    - [ ] Subtask: Verify authentication tests pass with >80% coverage
+- [x] Task: Ed25519 Peer Authentication & Secure Handshake (1137d7f)
+    - [x] Subtask: Write failing tests verifying signed handshake verification using ONDC participant Ed25519 keys
+    - [x] Subtask: Implement secure peer handshake verifier in `shared/p2p/auth.go`
+    - [x] Subtask: Verify authentication tests pass with >80% coverage
 - [ ] Task: P2P HTTP Status Handler & Integration Test
     - [ ] Subtask: Implement `/p2p/status` HTTP handler reporting active peers, sync state, and clock vector
     - [ ] Subtask: Write multi-node end-to-end integration test (`test/p2p_sync_e2e_test.go`) simulating 3 interconnected nodes syncing transaction data
