@@ -5,9 +5,9 @@
     - [x] Subtask: Write unit tests in `shared/clients/transactionclient` validating transaction storage via `storage.Repository`
     - [x] Subtask: Remove `cloud.google.com/go/spanner` imports and `SpannerClient` struct
     - [x] Subtask: Update `transactionclient.NewClient` to use SQLite repository exclusively
-- [ ] Task: Refactor `shared/transactiontest` to remove Spanner Admin APIs and emulator hooks
-    - [ ] Subtask: Refactor `shared/transactiontest/transactiontest.go` to provision in-memory/temp SQLite test databases
-    - [ ] Subtask: Remove Spanner database and instance admin client code and emulator address checks
+- [x] Task: Refactor `shared/transactiontest` to remove Spanner Admin APIs and emulator hooks (56f6e7f)
+    - [x] Subtask: Refactor `shared/transactiontest/transactiontest.go` to provision in-memory/temp SQLite test databases
+    - [x] Subtask: Remove Spanner database and instance admin client code and emulator address checks
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Go Source Code & Test Harness Refactoring' (Protocol in workflow.md)
 
 ## Phase 2: Dependency & Build System Purge
