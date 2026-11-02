@@ -1,12 +1,12 @@
 # Implementation Plan: Hybrid Structured Logging & Rotation (`shared/logging`)
 
 ## Phase 1: Core Engine: `LogRotator` & `MultiHandler`
-- [ ] Task: Write unit tests for `LogRotator` and `MultiHandler` (`shared/logging/rotator_test.go`, `shared/logging/handler_test.go`)
-    - [ ] Test size-based rotation and timestamped backup naming
-    - [ ] Test backup pruning adhering to `maxBackups`
-    - [ ] Test thread safety under concurrent writes
-    - [ ] Test `MultiHandler` routing to multiple downstream handlers with level filtering
-- [ ] Task: Implement `LogRotator` and `MultiHandler` (`shared/logging/rotator.go`, `shared/logging/handler.go`)
+- [x] Task: Write unit tests for `LogRotator` and `MultiHandler` (`shared/logging/rotator_test.go`, `shared/logging/handler_test.go`) [fd03ac5]
+    - [x] Test size-based rotation and timestamped backup naming
+    - [x] Test backup pruning adhering to `maxBackups`
+    - [x] Test thread safety under concurrent writes
+    - [x] Test `MultiHandler` routing to multiple downstream handlers with level filtering
+- [~] Task: Implement `LogRotator` and `MultiHandler` (`shared/logging/rotator.go`, `shared/logging/handler.go`)
     - [ ] Implement thread-safe `LogRotator` (`io.Writer` and `io.Closer`)
     - [ ] Implement `MultiHandler` adhering to `slog.Handler`
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Core Engine: LogRotator & MultiHandler' (Protocol in workflow.md)
