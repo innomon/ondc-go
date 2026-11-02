@@ -1150,12 +1150,6 @@ def go_dependencies():
         version = "v1.6.0",
     )
     go_repository(
-        name = "com_google_cloud_go_spanner",
-        importpath = "cloud.google.com/go/spanner",
-        sum = "h1:aqiMP8dhsEXgn9K5EZBWxPG7dxIiyM2VaikqeU4iteg=",
-        version = "v1.47.0",
-    )
-    go_repository(
         name = "com_google_cloud_go_speech",
         importpath = "cloud.google.com/go/speech",
         sum = "h1:JEVoWGNnTF128kNty7T4aG4eqv2z86yiMJPT9Zjp+iw=",
