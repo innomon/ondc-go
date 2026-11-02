@@ -26,7 +26,7 @@ Implement change log capture, vector/logical timestamps, delta packaging, and de
     - [x] Subtask: Verify sync engine tests pass with >80% coverage
 - [x] Task: Conductor - User Manual Verification 'Change Tracking, Conflict Resolution & Sync Protocol' (2f297d7)
 
-## Phase 3: Transport Security, Status Observability & End-to-End Integration
+## Phase 3: Transport Security, Status Observability & End-to-End Integration [checkpoint: 63e34de]
 Secure P2P channels with Ed25519 participant keys, expose status endpoints, and write multi-node sync integration tests.
 
 - [x] Task: Ed25519 Peer Authentication & Secure Handshake (1137d7f)
@@ -37,4 +37,4 @@ Secure P2P channels with Ed25519 participant keys, expose status endpoints, and 
     - [x] Subtask: Implement `/p2p/status` HTTP handler reporting active peers, sync state, and clock vector
     - [x] Subtask: Write multi-node end-to-end integration test (`test/p2p_sync_e2e_test.go`) simulating 3 interconnected nodes syncing transaction data
     - [x] Subtask: Verify integration test suite passes
-- [ ] Task: Conductor - User Manual Verification 'Transport Security, Status Observability & End-to-End Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Transport Security, Status Observability & End-to-End Integration' (63e34de)
