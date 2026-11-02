@@ -14,5 +14,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: remove all cloud spanner references**
+- [x] **Track: remove all cloud spanner references**
   *Link: [./tracks/remove_cloud_spanner_20261102/](./tracks/remove_cloud_spanner_20261102/)*
