@@ -13,7 +13,7 @@ Establish peer discovery mechanisms, membership state tracking, and periodic liv
     - [x] Subtask: Verify discovery tests pass with >80% coverage
 - [x] Task: Conductor - User Manual Verification 'Peer Discovery & Membership Management' (3e61d5c)
 
-## Phase 2: Change Tracking, Conflict Resolution & Sync Protocol
+## Phase 2: Change Tracking, Conflict Resolution & Sync Protocol [checkpoint: 2f297d7]
 Implement change log capture, vector/logical timestamps, delta packaging, and deterministic conflict resolution.
 
 - [x] Task: Implement Change Log & Lamport Clock Mutation Tracker (ff58038)
@@ -24,7 +24,7 @@ Implement change log capture, vector/logical timestamps, delta packaging, and de
     - [x] Subtask: Write failing tests for push/pull delta sync and Last-Write-Wins (LWW) conflict resolution
     - [x] Subtask: Implement `shared/p2p/sync_service.go` handling sync handshakes, delta requests, and atomic apply
     - [x] Subtask: Verify sync engine tests pass with >80% coverage
-- [ ] Task: Conductor - User Manual Verification 'Change Tracking, Conflict Resolution & Sync Protocol' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Change Tracking, Conflict Resolution & Sync Protocol' (2f297d7)
 
 ## Phase 3: Transport Security, Status Observability & End-to-End Integration
 Secure P2P channels with Ed25519 participant keys, expose status endpoints, and write multi-node sync integration tests.
