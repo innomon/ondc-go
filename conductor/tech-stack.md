@@ -8,6 +8,14 @@
 ## Storage & Database Layer
 - **Persistence & Synchronization:** [`sqlite-p2p`](https://github.com/innomon/sqlite-p2p)
 - **Engine:** Embedded SQLite with peer-to-peer data replication
+- **P2P Discovery & Sync Protocol:**
+  - Hybrid peer discovery (mDNS local broadcast + static seed probing via `/p2p/ping`)
+  - Thread-safe `PeerRegistry` with heartbeat latency metrics and TTL-based stale peer eviction
+  - Incremental change-log tracking with monotonic Lamport logical clocks on `transactions` and `registrations` tables
+  - Bidirectional push/pull delta replication streaming change batches
+  - Deterministic Last-Write-Wins (LWW) conflict resolution with node ID tie-breaking
+  - Cryptographic peer mutual authentication and signed requests using ONDC participant Ed25519 keystore keys
+  - Observability HTTP endpoint `/p2p/status` reporting node role, logical clock, total changes, and active peers
 - **Use Cases:** Transaction lifecycle state, order tracking, message deduplication, and audit logs without external cloud database dependencies
 
 ## Networking, APIs & Exposure
