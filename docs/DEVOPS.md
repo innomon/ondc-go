@@ -219,6 +219,135 @@ All replication calls (`/p2p/push`, `/p2p/pull`, `/p2p/ping`) enforce cryptograp
   - `X-ONDC-Signature`: Ed25519 signature of `timestamp:method:path:body_hash`.
 - Ensure public signing keys of approved peers are loaded into the peer registry or verified against the participant directory.
 
+### 4.5. Unified Self-Sovereign Node Deployment (`cmd/ondc-node`)
+
+The unified node ([`cmd/ondc-node`](/cmd/ondc-node)) combines all microservices (onboarding, buyer BAP, seller BPP, and embedded `sqlite-p2p` auto-replicator) into a single production-ready binary.
+
+#### 4.5.1. Configuration Reference (CLI Flags > ENV > Defaults)
+
+| Parameter | CLI Flag | Environment Variable | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| Deployment Mode | `--mode` | `ONDC_NODE_MODE` | `tunnel` | `tunnel` (plain HTTP behind proxy), `vm` (direct internet with TLS), or `local` |
+| Public Domain | `--domain` | `ONDC_DOMAIN` | `localhost` | FQDN for AutoCert and ONDC site verification |
+| HTTP Port | `--http-port` | `ONDC_HTTP_PORT` | `8080` (or `80` in VM mode) | Port for plain HTTP traffic and ACME HTTP-01 challenge |
+| HTTPS Port | `--https-port` | `ONDC_HTTPS_PORT` | `443` | Port for TLS traffic (used in `vm` mode) |
+| Cert Cache Dir | `--cert-dir` | `ONDC_CERT_DIR` | `./certs` | Directory to cache Let's Encrypt certificates |
+| Primary ONDC DB | `--db-path` | `ONDC_SQLITE_DB_PATH` | `./data/ondc.db` | SQLite database file for transactions & registry |
+| CRM Store DB | `--crm-path` | `ONDC_SQLITE_P2P_CRM_PATH` | `./data/sqlite_p2p_crm.db` | SQLite database file for `sqlite-p2p` replication |
+| Node ID | `--node-id` | `ONDC_NODE_ID` | `node-<hostname>` | Unique cluster node identifier |
+| Sync Interval | `--sync-interval` | `ONDC_P2P_SYNC_INTERVAL` | `2s` | Embedded P2P replication loop cadence |
+| Drain Timeout | `--drain-timeout` | `ONDC_DRAIN_TIMEOUT` | `10s` | Maximum time allowed to drain requests on shutdown |
+| Enable P2P | `--enable-p2p` | `ONDC_ENABLE_P2P` | `true` | Toggle embedded SQLite P2P replication daemon |
+| Enable Buyer | `--enable-buyer` | `ONDC_ENABLE_BUYER` | `true` | Mount Buyer App Protocol (`/bap/*`, `/client/*`) |
+| Enable Seller | `--enable-seller` | `ONDC_ENABLE_SELLER` | `true` | Mount Seller App Protocol (`/bpp/*`) |
+
+#### 4.5.2. Scenario A: Standalone VM with Automated SSL (Let's Encrypt AutoCert)
+
+When deploying to a public VM with internet ingress on ports 80 and 443:
+
+1. **DNS Setup:**
+   - Configure DNS A/AAAA records for your domain (e.g. `node.example.org`) pointing directly to the VM's public IP address.
+   - Ensure inbound TCP ports `80` and `443` are open on firewall/security groups.
+
+2. **Systemd Service Unit (`/etc/systemd/system/ondc-node.service`):**
+
+   ```ini
+   [Unit]
+   Description=Unified ONDC Sovereign Node with AutoCert
+   After=network.target
+
+   [Service]
+   Type=simple
+   User=ondc
+   Group=ondc
+   WorkingDirectory=/var/lib/ondc
+   ExecStart=/usr/local/bin/ondc-node \
+       --mode=vm \
+       --domain=node.example.org \
+       --http-port=80 \
+       --https-port=443 \
+       --cert-dir=/var/lib/ondc/certs \
+       --db-path=/var/lib/ondc/data/ondc.db \
+       --crm-path=/var/lib/ondc/data/sqlite_p2p_crm.db
+   Restart=always
+   RestartSec=5s
+   # Allow binding to privileged low ports 80 and 443 without root:
+   AmbientCapabilities=CAP_NET_BIND_SERVICE
+   CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+   LimitNOFILE=65535
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+3. **Enable and Start:**
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now ondc-node
+   sudo journalctl -u ondc-node -f
+   ```
+
+#### 4.5.3. Scenario B: Behind Cloudflare Tunnel (Firewalled Node)
+
+When hosting behind a NAT or firewall using Cloudflare Tunnel for ingress:
+
+1. **Run Unified Node on Local Port:**
+
+   ```bash
+   ondc-node \
+       --mode=tunnel \
+       --domain=node.example.org \
+       --http-port=8080 \
+       --db-path=/data/ondc.db \
+       --crm-path=/data/sqlite_p2p_crm.db
+   ```
+
+   Or via Docker:
+
+   ```bash
+   docker run -d \
+       --name ondc-node \
+       -v /host/data:/data \
+       -p 8080:8080 \
+       -e ONDC_NODE_MODE=tunnel \
+       -e ONDC_DOMAIN=node.example.org \
+       -e ONDC_HTTP_PORT=8080 \
+       -e ONDC_SQLITE_DB_PATH=/data/ondc.db \
+       -e ONDC_SQLITE_P2P_CRM_PATH=/data/sqlite_p2p_crm.db \
+       ghcr.io/innomon/ondc-node:latest
+   ```
+
+2. **Route Cloudflare Tunnel Ingress:**
+
+   In your `~/.cloudflared/config.yml`:
+
+   ```yaml
+   tunnel: <TUNNEL_UUID>
+   credentials-file: /etc/cloudflared/credentials.json
+
+   ingress:
+     - hostname: node.example.org
+       service: http://localhost:8080
+     - service: http_status:404
+   ```
+
+#### 4.5.4. Operational Verification & Health Checks
+
+Verify your unified node after startup:
+
+```bash
+# 1. Check composite subsystem health
+curl -s -i https://node.example.org/healthz
+# HTTP/2 200
+# {"status":"ok","db":"connected","crm":"connected","buyer":"enabled","seller":"enabled","p2p":"enabled"}
+
+# 2. Check node replication and telemetry
+curl -s https://node.example.org/status | jq .
+
+# 3. Verify public ONDC site verification endpoint
+curl -s https://node.example.org/ondc-site-verification.html
+```
+
 ---
 
 ## 5. Cloud Infrastructure (Terraform & Kubernetes)

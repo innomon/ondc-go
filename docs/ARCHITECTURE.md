@@ -247,6 +247,72 @@ For production deployments, the bridge is packaged as an autonomous daemon binar
 
 ---
 
+### 3.7. Unified Self-Sovereign Node (`cmd/ondc-node`)
+
+The Unified Self-Sovereign Node consolidates the entire ONDC participant stack—onboarding verification, buyer platform, seller platform, and bidirectional `sqlite-p2p` replication—into a single autonomous Go binary ([`cmd/ondc-node`](/cmd/ondc-node)).
+
+```mermaid
+flowchart TD
+    subgraph Ingress["Dual-Mode Public Ingress"]
+        direction TB
+        ModeVM["Standalone VM Mode<br/>(autocert HTTPS :443 + HTTP :80 Challenge)"]
+        ModeTunnel["Tunnel Mode<br/>(Cloudflare Tunnel -> HTTP :8080)"]
+    end
+
+    subgraph UnifiedServer["Unified ONDC Node Engine (shared/node)"]
+        Mux["Unified Route Multiplexer (NewNodeMux)"]
+        
+        subgraph Subsystems["Integrated Subsystems"]
+            Onboarding["Onboarding & Verification<br/>(/ondc-site-verification.html, /on_subscribe)"]
+            Buyer["Buyer Platform<br/>(/bap/*, /client/*)"]
+            Seller["Seller Platform<br/>(/bpp/*)"]
+            P2P["P2P Engine & Telemetry<br/>(/p2p/*, /healthz, /status)"]
+        end
+
+        subgraph EmbeddedBridge["Embedded SQLite P2P Bridge Daemon"]
+            DaemonLoop["Autonomous Sync Goroutine<br/>(Tick Interval 2s)"]
+            ONDCSQLite["Primary SQLite (ondc.db / WAL)"]
+            CRMSQLite["CRM Store (sqlite_p2p_crm.db / WAL)"]
+        end
+    end
+
+    ModeVM --> Mux
+    ModeTunnel --> Mux
+    Mux --> Onboarding
+    Mux --> Buyer
+    Mux --> Seller
+    Mux --> P2P
+
+    DaemonLoop <--> ONDCSQLite
+    DaemonLoop <--> CRMSQLite
+```
+
+#### 3.7.1. Route Multiplexing & Cohesion
+The unified node router mounts all ONDC protocol actions onto a single listener tree without route collisions:
+- **Registry & Verification:** `/ondc-site-verification.html` (returns signed HTML verification token), `/on_subscribe` (subscriber challenge verification).
+- **Buyer Platform (BAP):** `/bap/*` and `/client/*` (order search, select, init, confirm, status).
+- **Seller Platform (BPP):** `/bpp/*` (catalog search callback, quote generation, order processing).
+- **Decentralized Synchronization:** `/p2p/push`, `/p2p/pull`, `/p2p/ping`, `/p2p/status` with mutual Ed25519 authentication.
+- **Observability:** `/healthz` (composite SQLite & subsystem liveness check) and `/status` (real-time node metadata and replication metrics).
+
+#### 3.7.2. Dual Deployment Execution Modes
+1. **Cloudflare Tunnel / Local Ingress (`--mode=tunnel` or `--mode=local`):**
+   - The unified server runs a lightweight plain HTTP listener on the specified port (default `:8080`).
+   - Cloudflare Tunnel (`cloudflared`) terminates public TLS at the edge and routes incoming traffic to the internal port, ideal for home labs or firewalled data centers without open ports.
+2. **Standalone Internet VM (`--mode=vm`):**
+   - When deployed directly to a public cloud or bare-metal VM with open ports, the server configures `golang.org/x/crypto/acme/autocert`.
+   - Binds port `:443` for TLS traffic using automated Let's Encrypt certificates cached in `--cert-dir` (default `./certs`).
+   - Concurrently binds port `:80` using `autocert.HTTPHandler(nil)` to serve ACME HTTP-01 challenge responses and redirect inbound HTTP traffic to HTTPS.
+   - Automatically detects localhost or loopback domains (`localhost`, `127.0.0.1`, `::1`), falling back safely to plain HTTP for local offline development.
+
+#### 3.7.3. Embedded Bridge Daemon Lifecycle
+Instead of managing a separate sidecar process, `cmd/ondc-node` embeds the `p2p.BridgeDaemon` directly in-process:
+- On server startup, the bridge opens handles to `ondc.db` and `sqlite_p2p_crm.db`, initializes WAL mode, and starts a background goroutine ticking at `--sync-interval`.
+- Changes made by buyer/seller flows are automatically logged to `p2p_change_log` and exported to `crm_store`.
+- On shutdown, OS signals (`SIGINT`, `SIGTERM`) initiate coordinated draining: active HTTP connections are finished within `--drain-timeout` (default `10s`), the bridge loop flushes pending batches, and all database handles close cleanly.
+
+---
+
 ## 4. End-to-End Verification
 
 The complete architecture is validated by automated integration and end-to-end tests:
