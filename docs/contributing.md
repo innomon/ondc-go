@@ -42,10 +42,12 @@ For example,
 bazel test //buyer-platform/bap-api:all
 ```
 
-### Note
+### Storage & Testing Note
 
-Some tests require a Spanner Emulator running on your local machine. To start Spanner Emulator locally, see [Emulate Cloud Spanner locally](https://cloud.google.com/spanner/docs/emulator).
+All tests run hermetically using pure-Go embedded SQLite in-memory databases (`:memory:`). No external database emulators or cloud credentials are required to run the test suite.
 
-By default, our test functions communicate with Spanner Emulator on port `9010` via `gRPC` protocol. If you specify a custom port when running Spanner Emulator, you need to set `SPANNER_EMULATOR_ADDRESS` test environment vari	able to that address when running `blaze test`.
-For example,
-`bazel test --test_env=SPANNER_EMULATOR_ADDRESS=localhost:9010 //…`
+You can run the entire test suite using Go or Bazel:
+```bash
+go test -v ./...
+bazel test //... --test_output=errors
+```

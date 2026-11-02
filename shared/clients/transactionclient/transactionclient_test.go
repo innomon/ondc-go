@@ -22,11 +22,11 @@ import (
 	"ondc/shared/clients/transactionclient"
 )
 
-func TestNew_DefaultToSQLiteWithoutSpanner(t *testing.T) {
+func TestNew_DefaultToSQLite(t *testing.T) {
 	ctx := context.Background()
 
 	// Calling New with standard project/instance/database strings should succeed
-	// without any Spanner credentials or emulator, routing to SQLite storage.
+	// routing transparently to pure-Go embedded SQLite storage.
 	client, err := transactionclient.New(ctx, "test-proj", "test-inst", "default-tx-db")
 	if err != nil {
 		t.Fatalf("expected transactionclient.New to default to SQLite, got error: %v", err)
@@ -37,7 +37,7 @@ func TestNew_DefaultToSQLiteWithoutSpanner(t *testing.T) {
 	}
 
 	txData := transactionclient.TransactionData{
-		ID:              "txn-spanner-free-1",
+		ID:              "txn-sqlite-default-1",
 		Type:            "REQUEST-ACTION",
 		API:             "search",
 		MessageID:       "msg-sf-1",

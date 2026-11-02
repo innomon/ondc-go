@@ -35,7 +35,7 @@ It implements key generation and key rotation for the signing key and the encryp
 It provides middleware components that sit between your open-commerce applications and the ONDC network. The middleware provides the following features.
 - sign and verify the authentication header.
 - validate incoming request payload based on the OpenAPI specification.
-- store transaction logs in the Spanner database.
+- store transaction logs in embedded SQLite storage.
 - convert an asynchronous communication into a synchronous communication.
 
 The adapter consists of 2 modules
