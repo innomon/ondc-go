@@ -1,0 +1,8 @@
+{
+  "track_id": "remove_cloud_spanner_20261102",
+  "type": "refactor",
+  "status": "new",
+  "created_at": "2026-11-02T08:44:30Z",
+  "updated_at": "2026-11-02T08:44:30Z",
+  "description": "remove all cloud spanner references"
+}

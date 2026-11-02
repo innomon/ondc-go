@@ -1,0 +1,31 @@
+# Implementation Plan: Remove All Cloud Spanner References
+
+## Phase 1: Go Source Code & Test Harness Refactoring
+- [ ] Task: Refactor `shared/clients/transactionclient` to eliminate `SpannerClient`
+    - [ ] Subtask: Write unit tests in `shared/clients/transactionclient` validating transaction storage via `storage.Repository`
+    - [ ] Subtask: Remove `cloud.google.com/go/spanner` imports and `SpannerClient` struct
+    - [ ] Subtask: Update `transactionclient.NewClient` to use SQLite repository exclusively
+- [ ] Task: Refactor `shared/transactiontest` to remove Spanner Admin APIs and emulator hooks
+    - [ ] Subtask: Refactor `shared/transactiontest/transactiontest.go` to provision in-memory/temp SQLite test databases
+    - [ ] Subtask: Remove Spanner database and instance admin client code and emulator address checks
+- [ ] Task: Conductor - User Manual Verification 'Phase 1: Go Source Code & Test Harness Refactoring' (Protocol in workflow.md)
+
+## Phase 2: Dependency & Build System Purge
+- [ ] Task: Clean Go module dependencies
+    - [ ] Subtask: Remove `cloud.google.com/go/spanner` from `go.mod`
+    - [ ] Subtask: Run `go mod tidy` and verify clean build
+- [ ] Task: Purge Bazel build definitions and emulator test environment flags
+    - [ ] Subtask: Remove `@com_google_cloud_go_spanner` from `deps.bzl`, `MODULE.bazel`, and service `BUILD.bazel` files
+    - [ ] Subtask: Remove `SPANNER_EMULATOR_ADDRESS` from `.bazelrc`
+- [ ] Task: Conductor - User Manual Verification 'Phase 2: Dependency & Build System Purge' (Protocol in workflow.md)
+
+## Phase 3: Infrastructure, Manifests & Documentation Cleanup
+- [ ] Task: Purge Spanner from Terraform modules and sample configurations
+    - [ ] Subtask: Delete `terraform/modules/internal/spanner`
+    - [ ] Subtask: Remove Spanner resources, variables, and IAM bindings from `terraform/modules/buyer`, `terraform/modules/seller`, and `terraform/examples/sample`
+    - [ ] Subtask: Update deployment config templates (`bap-apis-config.yaml`, `seller-adapter-config.yaml`, etc.) to remove Spanner instance/database fields
+- [ ] Task: Clean documentation, comments, and perform final repository audit
+    - [ ] Subtask: Remove obsolete Spanner references and instructions across documentation and code comments
+    - [ ] Subtask: Verify `grep -ri "spanner" .` produces zero active code or build references
+    - [ ] Subtask: Execute full test suite `go test -v -race ./...`
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Infrastructure, Manifests & Documentation Cleanup' (Protocol in workflow.md)
