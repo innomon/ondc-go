@@ -10,14 +10,14 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Configuration, Core Server Engine & Route Multiplexing' (Protocol in workflow.md) [cbbaf99]
 
 ## Phase 2: Network Listeners, Dual-Mode TLS (autocert) & Embedded P2P Bridge
-- [ ] Task: Write unit tests for HTTP/HTTPS listener factory and embedded bridge orchestration (`shared/node/server_test.go`)
-    - [ ] Test HTTP server initialization in tunnel/local mode
-    - [ ] Test AutoCert manager initialization, HTTP-01 challenge handler, and localhost fallback
-    - [ ] Test embedded `BridgeDaemon` start/stop lifecycle coordination
-- [ ] Task: Implement dual-mode listener and embedded bridge manager (`shared/node/server.go`)
-    - [ ] Implement `RunServer` supporting plain HTTP and `autocert.Manager` TLS
-    - [ ] Embed and orchestrate `shared/p2p.BridgeDaemon` background replication
-    - [ ] Coordinate unified graceful shutdown (SIGINT/SIGTERM) with timeout draining
+- [x] Task: Write unit tests for HTTP/HTTPS listener factory and embedded bridge orchestration (`shared/node/server_test.go`) [cb5d156]
+    - [x] Test HTTP server initialization in tunnel/local mode
+    - [x] Test AutoCert manager initialization, HTTP-01 challenge handler, and localhost fallback
+    - [x] Test embedded `BridgeDaemon` start/stop lifecycle coordination
+- [x] Task: Implement dual-mode listener and embedded bridge manager (`shared/node/server.go`) [cb5d156]
+    - [x] Implement `RunServer` supporting plain HTTP and `autocert.Manager` TLS
+    - [x] Embed and orchestrate `shared/p2p.BridgeDaemon` background replication
+    - [x] Coordinate unified graceful shutdown (SIGINT/SIGTERM) with timeout draining
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Network Listeners, Dual-Mode TLS (autocert) & Embedded P2P Bridge' (Protocol in workflow.md)
 
 ## Phase 3: Unified Binary Entrypoint (`cmd/ondc-node`), Bazel Rules & E2E Testing
