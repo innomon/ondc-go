@@ -34,8 +34,6 @@ locals {
   gateway_url   = var.gateway_url
 
   pubsub_prefix         = var.pubsub_prefix
-  spanner_instance_name = var.spanner_instance_name
-  spanner_database_name = var.spanner_database_name
 
   registry_project_id = var.artifact_registry.project_id
   registry_location   = var.artifact_registry.location
@@ -83,18 +81,6 @@ resource "google_artifact_registry_repository_iam_member" "reader" {
   member = "serviceAccount:${var.service_account}"
 }
 
-// SPANNER DATABASE ADMIN
-resource "google_spanner_database_iam_member" "spannerDatabaseAdmin" {
-  provider = google
-
-  instance = module.spanner.instance.name
-  database = module.spanner.database.name
-
-  project = local.project_id
-  role    = "roles/spanner.admin"
-  member  = "serviceAccount:${var.service_account}"
-}
-
 // PUBSUB PUBLISHER
 resource "google_project_iam_member" "publisher" {
   provider = google
@@ -118,15 +104,6 @@ module "pubsub" {
   source = "../internal/pubsub"
 
   prefix = local.pubsub_prefix
-}
-
-// --- SPANER --- //
-module "spanner" {
-  source = "../internal/spanner"
-
-  instance_name   = local.spanner_instance_name
-  database_name   = local.spanner_database_name
-  processing_unit = var.spanner_processing_unit
 }
 
 // --- NETWORK --- //
@@ -265,8 +242,7 @@ module "gke" {
 
   depends_on = [
     module.network,
-    module.pubsub,
-    module.spanner
+    module.pubsub
   ]
 }
 
@@ -360,7 +336,6 @@ locals {
         url = local.registry_url
       }
       pubsub           = module.pubsub
-      spanner          = module.spanner
       ondc_environment = var.ondc_environment
     }
     buyer_app_config = {
@@ -388,7 +363,6 @@ locals {
         url = var.subscriber_url
       }
       pubsub           = module.pubsub
-      spanner          = module.spanner
       ondc_environment = var.ondc_environment
     }
   }
@@ -480,7 +454,6 @@ resource "kubectl_manifest" "app_services" {
 
   depends_on = [
     module.pubsub,
-    module.spanner,
     kubectl_manifest.namespaces,
     kubectl_manifest.istio_ingress,
   ]
@@ -552,7 +525,6 @@ resource "kubectl_manifest" "app_deployments" {
 
   depends_on = [
     module.pubsub,
-    module.spanner,
     kubectl_manifest.app_services,
     kubectl_manifest.app_servieaccounts,
     kubectl_manifest.namespaces,

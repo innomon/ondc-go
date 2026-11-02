@@ -35,8 +35,8 @@ data:
         "${pubsub.prefix}-callback-on-rating",
         "${pubsub.prefix}-callback-on-support"
       ],
-      "instanceID": "${spanner.instance.name}",
-      "databaseID": "${spanner.database.name}",
+      "instanceID": "",
+      "databaseID": "sqlite:/data/ondc.db",
       "gatewayURL": "${gateway.url}",
       "subscriberID": "${subscriber.id}",
       "subscriberURL": "${subscriber.url}",

@@ -168,9 +168,6 @@ module "dev_buyer_app" {
 
   // User defined variables
   pubsub_prefix           = "dev-buyer"
-  spanner_instance_name   = "dev-buyer-spanner-instance"
-  spanner_database_name   = "dev-buyer-spanner-database"
-  spanner_processing_unit = 100
 
   key_id         = local.key_id
   subscriber_id  = local.subscriber_id
@@ -214,9 +211,6 @@ module "dev_seller_app" {
 
   // User defined variables
   pubsub_prefix           = "dev-seller"
-  spanner_instance_name   = "dev-seller-spanner-instance"
-  spanner_database_name   = "dev-seller-spanner-database"
-  spanner_processing_unit = 100
 
   key_id         = local.key_id
   subscriber_id  = local.subscriber_id

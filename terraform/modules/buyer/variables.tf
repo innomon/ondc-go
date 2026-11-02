@@ -30,23 +30,6 @@ variable "pubsub_prefix" {
   default     = "buyer"
 }
 
-variable "spanner_instance_name" {
-  type        = string
-  description = "Spanner Instance name"
-  default     = "buyer-ondc-spanner-instance"
-}
-
-variable "spanner_database_name" {
-  type        = string
-  description = "Spanner Database name"
-  default     = "buyer-ondc-spanner-database"
-}
-
-variable "spanner_processing_unit" {
-  type        = number
-  description = "Spanner Processing Unit"
-}
-
 variable "key_id" {
   type        = string
   description = "Unique Key ID of our entity that is registered to the ONDC network"
@@ -108,12 +91,6 @@ variable "ondc_environment" {
   type        = string
   description = "Network environment of ONDC. It should be one of staging, pre-production, production"
   default     = "staging"
-}
-
-variable "spanner_display_name" {
-  type        = string
-  description = "Spanner Instance Display Name"
-  default     = "Buyer Spanner Instance"
 }
 
 variable "network_name" {

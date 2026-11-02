@@ -25,7 +25,7 @@ data:
       "topicID": "${pubsub.prefix}-callback",
       "port": ${port},
       "registryURL": "${registry.url}",
-      "instanceID": "${spanner.instance.name}",
-      "databaseID": "${spanner.database.name}",
+      "instanceID": "",
+      "databaseID": "sqlite:/data/ondc.db",
       "ONDCEnvironment": "${ondc_environment}"
     }

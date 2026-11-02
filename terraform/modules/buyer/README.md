@@ -11,8 +11,7 @@ Key components of this module consist of
     * BAP API
     * BAP Adapter Service
 - Pub/Sub topics and subscriptions for relaying messages.
-- Spanner Database for storing transactions
-  To see database schema, see [Spanner module](../internal/spanner/)
+- Embedded pure-Go SQLite for storing transactions (configured in service manifests)
 
 ## Communication flow
 This is an overview of how messasges are being relayed through this module.
@@ -81,10 +80,6 @@ See the [terraform/examples/sample](../../examples/sample/)
 | <a name="input_registry_url"></a> [registry\_url](#input\_registry\_url) | ONDC Registry URL | `string` | n/a | yes |
 | <a name="input_secret_id"></a> [secret\_id](#input\_secret\_id) | Secret Manager's Secret ID that store our key pairs | `string` | n/a | yes |
 | <a name="input_service_account"></a> [service\_account](#input\_service\_account) | GKE Cluster Service Account | `string` | n/a | yes |
-| <a name="input_spanner_database_name"></a> [spanner\_database\_name](#input\_spanner\_database\_name) | Spanner Database name | `string` | `"buyer-ondc-spanner-database"` | no |
-| <a name="input_spanner_display_name"></a> [spanner\_display\_name](#input\_spanner\_display\_name) | Spanner Instance Display Name | `string` | `"Buyer Spanner Instance"` | no |
-| <a name="input_spanner_instance_name"></a> [spanner\_instance\_name](#input\_spanner\_instance\_name) | Spanner Instance name | `string` | `"buyer-ondc-spanner-instance"` | no |
-| <a name="input_spanner_processing_unit"></a> [spanner\_processing\_unit](#input\_spanner\_processing\_unit) | Spanner Processing Unit | `number` | n/a | yes |
 | <a name="input_subnet_ip"></a> [subnet\_ip](#input\_subnet\_ip) | GKE Node IP Range | `string` | `""` | no |
 | <a name="input_subnet_name"></a> [subnet\_name](#input\_subnet\_name) | GKE Subnet name | `string` | `""` | no |
 | <a name="input_subscriber_id"></a> [subscriber\_id](#input\_subscriber\_id) | Subscriber ID of the entity in the ONDC network eg. `abcstore.com` | `string` | n/a | yes |
@@ -106,7 +101,6 @@ See the [terraform/examples/sample](../../examples/sample/)
 | <a name="module_gke"></a> [gke](#module\_gke) | terraform-google-modules/kubernetes-engine/google | 27.0.0 |
 | <a name="module_network"></a> [network](#module\_network) | terraform-google-modules/network/google | 7.1.0 |
 | <a name="module_pubsub"></a> [pubsub](#module\_pubsub) | ../internal/pubsub | n/a |
-| <a name="module_spanner"></a> [spanner](#module\_spanner) | ../internal/spanner | n/a |
 
 ## Resources
 
@@ -125,7 +119,6 @@ See the [terraform/examples/sample](../../examples/sample/)
 | [google_project_iam_member.publisher](https://registry.terraform.io/providers/hashicorp/google/4.73.1/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.pubsubAdmin](https://registry.terraform.io/providers/hashicorp/google/4.73.1/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.viewer](https://registry.terraform.io/providers/hashicorp/google/4.73.1/docs/resources/project_iam_member) | resource |
-| [google_spanner_database_iam_member.spannerDatabaseAdmin](https://registry.terraform.io/providers/hashicorp/google/4.73.1/docs/resources/spanner_database_iam_member) | resource |
 | [kubectl_manifest.allow_egress_googleapis](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.app_deployments](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.app_gateways](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
