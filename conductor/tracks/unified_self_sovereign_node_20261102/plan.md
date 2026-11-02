@@ -9,7 +9,7 @@
     - [x] Implement `NewNodeMux` combining onboarding, buyer, seller, and P2P HTTP endpoints
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Configuration, Core Server Engine & Route Multiplexing' (Protocol in workflow.md) [cbbaf99]
 
-## Phase 2: Network Listeners, Dual-Mode TLS (autocert) & Embedded P2P Bridge
+## Phase 2: Network Listeners, Dual-Mode TLS (autocert) & Embedded P2P Bridge [checkpoint: bc771fd]
 - [x] Task: Write unit tests for HTTP/HTTPS listener factory and embedded bridge orchestration (`shared/node/server_test.go`) [cb5d156]
     - [x] Test HTTP server initialization in tunnel/local mode
     - [x] Test AutoCert manager initialization, HTTP-01 challenge handler, and localhost fallback
@@ -18,7 +18,7 @@
     - [x] Implement `RunServer` supporting plain HTTP and `autocert.Manager` TLS
     - [x] Embed and orchestrate `shared/p2p.BridgeDaemon` background replication
     - [x] Coordinate unified graceful shutdown (SIGINT/SIGTERM) with timeout draining
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Network Listeners, Dual-Mode TLS (autocert) & Embedded P2P Bridge' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Network Listeners, Dual-Mode TLS (autocert) & Embedded P2P Bridge' (Protocol in workflow.md) [bc771fd]
 
 ## Phase 3: Unified Binary Entrypoint (`cmd/ondc-node`), Bazel Rules & E2E Testing
 - [ ] Task: Write end-to-end integration tests for unified server (`test/unified_node_e2e_test.go`)
