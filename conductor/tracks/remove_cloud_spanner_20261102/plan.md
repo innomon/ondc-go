@@ -14,9 +14,9 @@
 - [x] Task: Clean Go module dependencies (5eb0772)
     - [x] Subtask: Remove `cloud.google.com/go/spanner` from `go.mod`
     - [x] Subtask: Run `go mod tidy` and verify clean build
-- [ ] Task: Purge Bazel build definitions and emulator test environment flags
-    - [ ] Subtask: Remove `@com_google_cloud_go_spanner` from `deps.bzl`, `MODULE.bazel`, and service `BUILD.bazel` files
-    - [ ] Subtask: Remove `SPANNER_EMULATOR_ADDRESS` from `.bazelrc`
+- [x] Task: Purge Bazel build definitions and emulator test environment flags (7a5e34f)
+    - [x] Subtask: Remove `@com_google_cloud_go_spanner` from `deps.bzl`, `MODULE.bazel`, and service `BUILD.bazel` files
+    - [x] Subtask: Remove `SPANNER_EMULATOR_ADDRESS` from `.bazelrc`
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Dependency & Build System Purge' (Protocol in workflow.md)
 
 ## Phase 3: Infrastructure, Manifests & Documentation Cleanup
