@@ -76,9 +76,14 @@ type PingResponse struct {
 
 // ProbeStaticSeeds dials configured seed URLs, queries /p2p/ping, and registers active peers.
 func (d *DiscoveryService) ProbeStaticSeeds(ctx context.Context) ([]PeerInfo, error) {
+	return d.ProbeSeeds(ctx, d.cfg.StaticSeeds)
+}
+
+// ProbeSeeds dials arbitrary seed URLs, queries /p2p/ping, and registers active peers.
+func (d *DiscoveryService) ProbeSeeds(ctx context.Context, seeds []string) ([]PeerInfo, error) {
 	var discovered []PeerInfo
 
-	for _, seed := range d.cfg.StaticSeeds {
+	for _, seed := range seeds {
 		seed = strings.TrimRight(seed, "/")
 		pingURL := fmt.Sprintf("%s/p2p/ping", seed)
 
