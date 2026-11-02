@@ -171,6 +171,27 @@ and instantiate [`p2p.OpenEngine`](/shared/storage) wrapping the database handle
 
 ---
 
+### 3.5. Bidirectional `sqlite-p2p` Interoperability Bridge
+
+To ensure heterogeneous network deployments can seamlessly interoperate between native ONDC Go SQLite nodes and standalone `sqlite-p2p` nodes, the [`/shared/p2p`](/shared/p2p) package implements an interoperability bridge ([`/shared/p2p/interop.go`](/shared/p2p/interop.go)):
+
+1. **Wire-Format & Changeset Mapping:**
+   - **`sqlite-p2p` -> `ondc-go`:** Ingests `SQLiteP2PChangeset` (Sequence, Timestamp, Op 1/2/3, Key, Metadata JSON, Data BLOB) and parses them into typed `ChangeRecord` instances, executing LWW convergence via `SyncService.ApplyChangeBatch`.
+   - **`ondc-go` -> `sqlite-p2p`:** Maps `ChangeRecord` (INSERT/UPDATE/DELETE) into `SQLiteP2PChangeset` entries targeting the unified `crm_store` schema (`key TEXT PRIMARY KEY, metadata TEXT CHECK(json_valid), data BLOB WITHOUT ROWID`).
+
+2. **Canonical Key Protocol:**
+   - Entities are namespaced as `ondc:<table_name>:<entity_id>` (e.g. `ondc:transactions:txn-101:REQUEST-ACTION:msg-101:req-101` and `ondc:registrations:reg-555`).
+
+3. **Bidirectional Test Suite:**
+   - [`/shared/p2p/interop_test.go`](/shared/p2p/interop_test.go) proves end-to-end bidirectional interoperability:
+     - `TestBidirectionalInterop_ONDC_To_SQLiteP2P`: Proves ONDC transactions written to SQLite are exported to `sqlite-p2p` `crm_store` with identical payload and metadata.
+     - `TestBidirectionalInterop_SQLiteP2P_To_ONDC`: Proves mutations created in `sqlite-p2p` are ingested into ONDC Go's relational tables and queried via `storage.Repository`.
+     - `TestBidirectionalInterop_Registrations`: Proves network participant keys and registration records sync bidirectionally.
+     - `TestBidirectionalInterop_FullMeshRoundtripAndConflictResolution`: Proves concurrent conflicting writes across both engines converge deterministically using Lamport clock Last-Write-Wins (LWW) resolution.
+     - `TestBidirectionalInterop_RealWALFiles`: Proves real on-disk SQLite files with Write-Ahead Logging (`PRAGMA journal_mode = WAL;`) maintain transactional integrity across restarts.
+
+---
+
 ## 4. End-to-End Verification
 
 The complete architecture is validated by automated integration and end-to-end tests:

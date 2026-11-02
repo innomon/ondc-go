@@ -1,0 +1,37 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "p2p",
+    srcs = [
+        "auth.go",
+        "changelog.go",
+        "discovery.go",
+        "interop.go",
+        "peer_registry.go",
+        "status.go",
+        "sync_service.go",
+    ],
+    importpath = "ondc/shared/p2p",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//shared/storage",
+    ],
+)
+
+go_test(
+    name = "p2p_test",
+    srcs = [
+        "auth_test.go",
+        "changelog_test.go",
+        "discovery_test.go",
+        "interop_test.go",
+        "peer_registry_test.go",
+        "status_test.go",
+        "sync_service_test.go",
+    ],
+    deps = [
+        ":p2p",
+        "//shared/storage",
+        "@org_modernc_sqlite//:sqlite",
+    ],
+)

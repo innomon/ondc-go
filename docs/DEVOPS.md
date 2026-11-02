@@ -42,6 +42,7 @@ flowchart TD
 ## 2. Building & Containerization
 
 ### 2.1. Native Go Toolchain
+
 For local builds and lightweight container images:
 
 ```bash
@@ -56,6 +57,7 @@ go build ./...
 ```
 
 ### 2.2. Hermetic Container Builds with Bazel
+
 The repository uses Bazel (`MODULE.bazel`, `WORKSPACE`) to produce reproducible, hermetic OCI container images.
 
 Helper scripts are provided in [`/docker/scripts`](/docker/scripts):
@@ -69,6 +71,7 @@ Helper scripts are provided in [`/docker/scripts`](/docker/scripts):
 ```
 
 Individual service publish scripts:
+
 - [`/docker/scripts/publish_buyer.sh`](/docker/scripts/publish_buyer.sh): Buyer app, BAP adapter, BAP APIs, request action.
 - [`/docker/scripts/publish_seller.sh`](/docker/scripts/publish_seller.sh): BPP API, callback action, seller adapter.
 - [`/docker/scripts/publish_onboarding.sh`](/docker/scripts/publish_onboarding.sh): Registration and site verification service.
@@ -82,10 +85,12 @@ Individual service publish scripts:
 To receive incoming ONDC network callbacks (`/on_*`, `/search`, `/init`) and serve the mandatory `/ondc-site-verification.html` file without exposing public static IPs or opening firewall ports, use Cloudflare Tunnel.
 
 ### 3.1. Prerequisites
+
 - `cloudflared` binary installed (`cloudflared --version`).
 - A Cloudflare account with a managed domain (e.g. `example.com`).
 
 ### 3.2. Tunnel Automation Script
+
 Use [`/scripts/run_local_tunnel.sh`](/scripts/run_local_tunnel.sh) to generate configurations and launch the tunnel:
 
 ```bash
@@ -111,6 +116,7 @@ export BPP_PORT=8082
 ```
 
 ### 3.3. Ingress Routing Table
+
 The generated configuration routes traffic based on ONDC path conventions:
 
 | Path Prefix | Target Service | Local Port |
@@ -126,14 +132,17 @@ The generated configuration routes traffic based on ONDC path conventions:
 ## 4. Storage & Decentralized P2P Mesh Operations
 
 ### 4.1. SQLite Storage Configuration
+
 The embedded storage layer ([`/shared/storage`](/shared/storage)) uses `modernc.org/sqlite` without CGO.
 
 **Operational Best Practices:**
+
 - **WAL Mode:** Write-Ahead Logging (`PRAGMA journal_mode = WAL;`) and synchronous normal (`PRAGMA synchronous = NORMAL;`) are enabled by default for concurrent read/write throughput.
 - **Directory Permissions:** Ensure the directory containing the SQLite `.db` file is writable by the process user (needed for `.db-wal` and `.db-shm` temporary files).
 - **Backups:** Use the SQLite online backup API or `VACUUM INTO 'backup.db'` during production snapshots.
 
 ### 4.2. P2P Peer Discovery Setup
+
 The discovery engine ([`/shared/p2p/discovery.go`](/shared/p2p/discovery.go)) operates in hybrid mode:
 
 1. **Local LAN Discovery (mDNS):**
@@ -142,13 +151,17 @@ The discovery engine ([`/shared/p2p/discovery.go`](/shared/p2p/discovery.go)) op
 
 2. **Wide-Area Discovery (Bootstrap Seeds):**
    - For WAN or cross-cloud deployments, configure static seed URLs in your service environment:
+
      ```bash
      ONDC_P2P_STATIC_SEEDS="https://peer1.region-a.org:8080,https://peer2.region-b.org:8080"
      ```
+
    - The node actively probes seeds via authenticated `/p2p/ping` calls and registers responsive peers in the dynamic registry.
 
 ### 4.3. Peer Mutual Authentication
+
 All replication calls (`/p2p/push`, `/p2p/pull`, `/p2p/ping`) enforce cryptographic mutual authentication:
+
 - Every request must include:
   - `X-ONDC-Peer-ID`: Node identifier.
   - `X-ONDC-Timestamp`: Unix timestamp (requests skewed beyond 300s are rejected).
@@ -160,6 +173,7 @@ All replication calls (`/p2p/push`, `/p2p/pull`, `/p2p/ping`) enforce cryptograp
 ## 5. Cloud Infrastructure (Terraform & Kubernetes)
 
 ### 5.1. Terraform Modules
+
 The [`/terraform`](/terraform) directory contains modules for provisioning enterprise cloud infrastructure:
 
 - [`/terraform/modules/buyer`](/terraform/modules/buyer): Buyer cluster, VPC networking, GKE deployments.
@@ -168,6 +182,7 @@ The [`/terraform`](/terraform) directory contains modules for provisioning enter
 - [`/terraform/modules/key-rotation`](/terraform/modules/key-rotation): Secret manager bindings and key rotation service.
 
 ### 5.2. Example Environment Deployment
+
 To initialize and apply the sample Terraform topology:
 
 ```bash
@@ -178,6 +193,7 @@ terraform apply tfplan.binary
 ```
 
 ### 5.3. Rolling Restarts on Kubernetes
+
 To perform zero-downtime rolling updates of deployed pods:
 
 ```bash
@@ -193,6 +209,7 @@ To perform zero-downtime rolling updates of deployed pods:
 ## 6. Observability, Health Checks & Metrics
 
 ### 6.1. P2P Status Endpoint (`/p2p/status`)
+
 Each node exposes an operational health and replication metric endpoint:
 
 ```bash
@@ -200,6 +217,7 @@ curl -s http://localhost:8080/p2p/status | jq .
 ```
 
 **Sample Response:**
+
 ```json
 {
   "node_id": "bap-node-01",
@@ -227,6 +245,7 @@ curl -s http://localhost:8080/p2p/status | jq .
 ```
 
 ### 6.2. Kubernetes Liveness & Readiness Probes
+
 Configure container probes using standard HTTP endpoints:
 
 ```yaml
@@ -250,6 +269,7 @@ readinessProbe:
 ## 7. CI/CD & Automated Verification
 
 ### 7.1. Automated Test Pipeline
+
 Run automated quality gates prior to building images or cutting releases:
 
 ```bash
@@ -268,6 +288,7 @@ go tool cover -func=coverage.out
 ```
 
 ### 7.2. Production Checklist
+
 - [ ] Ed25519 signing keys and X25519 encryption keys securely generated and backed up.
 - [ ] Public site verification file accessible at `https://<DOMAIN>/ondc-site-verification.html`.
 - [ ] `/on_subscribe` endpoint reachable and returning valid ONDC registration signatures.
