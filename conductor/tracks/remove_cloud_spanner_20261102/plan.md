@@ -17,7 +17,7 @@
 - [x] Task: Purge Bazel build definitions and emulator test environment flags (7a5e34f)
     - [x] Subtask: Remove `@com_google_cloud_go_spanner` from `deps.bzl`, `MODULE.bazel`, and service `BUILD.bazel` files
     - [x] Subtask: Remove `SPANNER_EMULATOR_ADDRESS` from `.bazelrc`
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Dependency & Build System Purge' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Dependency & Build System Purge' (Protocol in workflow.md)
 
 ## Phase 3: Infrastructure, Manifests & Documentation Cleanup
 - [ ] Task: Purge Spanner from Terraform modules and sample configurations
