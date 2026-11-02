@@ -9,5 +9,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Implement P2P peer discovery and sync protocol for sqlite-p2p nodes**
+- [x] **Track: Implement P2P peer discovery and sync protocol for sqlite-p2p nodes**
   *Link: [./tracks/sqlite_p2p_discovery_sync_20261101/](./tracks/sqlite_p2p_discovery_sync_20261101/)*
