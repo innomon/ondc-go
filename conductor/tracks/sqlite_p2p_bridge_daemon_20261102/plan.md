@@ -7,9 +7,9 @@
 - [x] Task: Implement `BridgeDaemon` engine with background loop & metrics (`shared/p2p/daemon.go`) [602b4d2]
     - [x] Write unit tests for `BridgeDaemon` lifecycle, sync step execution, and error handling in `shared/p2p/daemon_test.go`
     - [x] Implement `BridgeDaemon` struct with `Start(ctx context.Context)`, `Stop()`, `SyncOnce(ctx context.Context)`, and stats tracking
-- [ ] Task: Implement HTTP Health & Status server (`shared/p2p/daemon_http.go`)
-    - [ ] Write unit tests for `/healthz` and `/status` in `shared/p2p/daemon_http_test.go`
-    - [ ] Implement HTTP handler routes for health checks and daemon metrics
+- [x] Task: Implement HTTP Health & Status server (`shared/p2p/daemon_http.go`) [aeffaf5]
+    - [x] Write unit tests for `/healthz` and `/status` in `shared/p2p/daemon_http_test.go`
+    - [x] Implement HTTP handler routes for health checks and daemon metrics
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Configuration & Bridge Daemon Core Engine' (Protocol in workflow.md)
 
 ## Phase 2: Standalone CLI Binary & Bazel Target
