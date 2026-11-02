@@ -1,0 +1,8 @@
+{
+  "track_id": "sqlite_p2p_bridge_daemon_20261102",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-11-02T12:43:00Z",
+  "updated_at": "2026-11-02T12:43:00Z",
+  "description": "create the Application Bootstrap Wiring as discussed above, to auto replicate between ondc-go and sqlite-p2p, no hardcoded variables create a standalone service"
+}

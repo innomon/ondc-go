@@ -16,3 +16,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: remove all cloud spanner references**
   *Link: [./tracks/archive/remove_cloud_spanner_20261102/](./tracks/archive/remove_cloud_spanner_20261102/)*
+
+---
+
+- [ ] **Track: create the Application Bootstrap Wiring as discussed above, to auto replicate between ondc-go and sqlite-p2p, no hardcoded variables create a standalone service**
+  *Link: [./tracks/sqlite_p2p_bridge_daemon_20261102/](./tracks/sqlite_p2p_bridge_daemon_20261102/)*
