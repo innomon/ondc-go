@@ -24,6 +24,8 @@ ONDC Open Commerce provides reference and production-ready middleware services d
    - Ed25519 signing key and X25519 encryption key generation, storage, and rotation.
 5. **Data & Audit Persistence (sqlite-p2p):**
    - Decentralized peer-to-peer transaction logging, audit trail, and state replication using [`sqlite-p2p`](https://github.com/innomon/sqlite-p2p), replacing external Cloud Spanner dependencies.
+6. **Unified Sovereign Node (`cmd/ondc-node`):**
+   - Single-executable server running onboarding, buyer, seller, and sqlite-p2p replicator together with dual-mode deployment (Cloudflare Tunnel vs Standalone VM with automated Let's Encrypt TLS).
 
 # Non-Functional Requirements
 - **Security:** Strict header signature verification (Ed25519) and payload validation against ONDC Retail OpenAPI specifications.

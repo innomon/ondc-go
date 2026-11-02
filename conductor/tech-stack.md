@@ -21,6 +21,8 @@
 ## Networking, APIs & Exposure
 - **Protocol:** HTTP REST with JSON payloads adhering to ONDC Retail Protocol v1.2.0 / OpenAPI v1.0.31
 - **RPC & Serialization:** Protocol Buffers & gRPC (`google.golang.org/protobuf`, `google.golang.org/grpc`)
+- **Unified Self-Sovereign Node:** `cmd/ondc-node` running onboarding, buyer, seller, and P2P bridge subsystems from a single binary
+- **Automated SSL/TLS (ACME):** `golang.org/x/crypto/acme/autocert` for standalone VM direct-to-internet deployments with automated Let's Encrypt certificates (ports 443 HTTPS and 80 HTTP-01 challenge redirect with localhost fallback)
 - **Local Deployment & Public Ingress:** Cloudflare Tunnel (`cloudflared`) for sovereign local deployments, enabling secure public HTTPS callbacks and ONDC registry site verification without port forwarding or static IPs
 - **Container / Mesh (Optional / Production):** Docker, Kubernetes manifests, Istio Service Mesh
 
