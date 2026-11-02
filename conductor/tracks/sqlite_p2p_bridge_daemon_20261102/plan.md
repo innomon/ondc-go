@@ -12,13 +12,13 @@
     - [x] Implement HTTP handler routes for health checks and daemon metrics
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Configuration & Bridge Daemon Core Engine' (Protocol in workflow.md) [ab3df38]
 
-## Phase 2: Standalone CLI Binary & Bazel Target
+## Phase 2: Standalone CLI Binary & Bazel Target [checkpoint: da03d6c]
 - [x] Task: Implement `cmd/ondc-p2p-bridge/main.go` entrypoint [c40f203]
     - [x] Handcrafted CLI argument parser using standard library `flag` and OS signal trap (SIGINT/SIGTERM)
     - [x] Wire daemon start, HTTP server launch, and clean shutdown handling
 - [x] Task: Create Bazel build target `//cmd/ondc-p2p-bridge` in `cmd/ondc-p2p-bridge/BUILD.bazel` [3eddd8f]
     - [x] Define `go_binary` rule and verify `bazel build //cmd/ondc-p2p-bridge` and `go build ./cmd/ondc-p2p-bridge`
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Standalone CLI Binary & Bazel Target' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Standalone CLI Binary & Bazel Target' (Protocol in workflow.md) [da03d6c]
 
 ## Phase 3: End-to-End Integration Testing & Documentation
 - [ ] Task: Write end-to-end integration test (`test/p2p_bridge_daemon_e2e_test.go`)
