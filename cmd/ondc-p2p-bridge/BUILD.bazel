@@ -1,0 +1,17 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "ondc-p2p-bridge_lib",
+    srcs = ["main.go"],
+    importpath = "ondc/cmd/ondc-p2p-bridge",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//shared/p2p",
+    ],
+)
+
+go_binary(
+    name = "ondc-p2p-bridge",
+    embed = [":ondc-p2p-bridge_lib"],
+    visibility = ["//visibility:public"],
+)
