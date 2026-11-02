@@ -1,9 +1,9 @@
 # Implementation Plan: Standalone SQLite-P2P Auto-Replication Bridge Service
 
 ## Phase 1: Configuration & Bridge Daemon Core Engine
-- [ ] Task: Create `BridgeConfig` struct with flag and environment variable resolution (`shared/p2p/daemon_config.go`)
-    - [ ] Write unit tests for configuration resolution priority (CLI flags > ENV > Defaults) in `shared/p2p/daemon_config_test.go`
-    - [ ] Implement `LoadBridgeConfig(args []string, lookupEnv func(string) (string, bool))` supporting flags and env vars without spf13/cobra
+- [x] Task: Create `BridgeConfig` struct with flag and environment variable resolution (`shared/p2p/daemon_config.go`) [9b73618]
+    - [x] Write unit tests for configuration resolution priority (CLI flags > ENV > Defaults) in `shared/p2p/daemon_config_test.go`
+    - [x] Implement `LoadBridgeConfig(args []string, lookupEnv func(string) (string, bool))` supporting flags and env vars without spf13/cobra
 - [ ] Task: Implement `BridgeDaemon` engine with background loop & metrics (`shared/p2p/daemon.go`)
     - [ ] Write unit tests for `BridgeDaemon` lifecycle, sync step execution, and error handling in `shared/p2p/daemon_test.go`
     - [ ] Implement `BridgeDaemon` struct with `Start(ctx context.Context)`, `Stop()`, `SyncOnce(ctx context.Context)`, and stats tracking
