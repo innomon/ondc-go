@@ -229,73 +229,15 @@ flowchart TD
     SyncSvc -->|LWW Converged Merge| SQLiteRepo
 ```
 
-#### 3.6.2. Configuration & Runtime Integration
+#### 3.6.2. Standalone Bridge Daemon Architecture (`cmd/ondc-p2p-bridge`)
 
-Runtime synchronization is configured using environment variables and wired during node startup:
+For production deployments, the bridge is packaged as an autonomous daemon binary ([`cmd/ondc-p2p-bridge`](/cmd/ondc-p2p-bridge)) powered by [`p2p.BridgeDaemon`](/shared/p2p/daemon.go):
 
-```go
-package main
-
-import (
-    "context"
-    "database/sql"
-    "os"
-    "time"
-
-    _ "modernc.org/sqlite"
-    "github.com/innomon/ondc-go/shared/p2p"
-    "github.com/innomon/ondc-go/shared/storage"
-)
-
-func main() {
-    ctx, cancel := context.WithCancel(context.Background())
-    defer cancel()
-
-    // 1. Initialize local ONDC relational database
-    dbPath := os.Getenv("ONDC_SQLITE_DB_PATH")
-    if dbPath == "" {
-        dbPath = "/var/data/ondc/ondc.db"
-    }
-    ondcDB, _ := sql.Open("sqlite", dbPath)
-    repo, _ := storage.NewSQLiteRepository(storage.SQLiteOptions{DB: ondcDB})
-
-    // 2. Open or create sqlite-p2p crm_store database
-    crmPath := os.Getenv("ONDC_SQLITE_P2P_CRM_PATH")
-    if crmPath == "" {
-        crmPath = "/var/data/ondc/sqlite_p2p_crm.db"
-    }
-    crmDB, _ := sql.Open("sqlite", crmPath)
-    _ = p2p.InitSQLiteP2PCRMStore(crmDB)
-
-    // 3. Initialize ONDC synchronization service
-    nodeID := os.Getenv("ONDC_NODE_ID")
-    syncSvc, _ := p2p.NewSyncService(p2p.SyncServiceConfig{
-        NodeID:       nodeID,
-        Repo:         repo,
-        Tracker:      repo.Tracker(),
-        SyncInterval: 2 * time.Second,
-        MaxBatchSize: 500,
-    })
-
-    // 4. Initialize bidirectional bridge
-    bridge := p2p.NewSQLiteP2PBridge(ondcDB, crmDB, repo.Tracker(), syncSvc)
-
-    // 5. Start autonomous replication background loop
-    go func() {
-        ticker := time.NewTicker(2 * time.Second)
-        defer ticker.Stop()
-        for {
-            select {
-            case <-ctx.Done():
-                return
-            case <-ticker.C:
-                _ = bridge.ExportToSQLiteP2P(ctx)
-                _ = bridge.ImportFromSQLiteP2P(ctx)
-            }
-        }
-    }()
-}
-```
+- **No Hardcoded Variables:** Config is resolved dynamically via standard flags and environment variables (`CLI Flags > ENV > Defaults`).
+- **Telemetry & Health Monitoring:** Built-in HTTP server exposing:
+  - `GET /healthz`: Pings both SQLite databases, returning `200 OK` or `503 Service Unavailable`.
+  - `GET /status`: Emits real-time replication metrics (`node_id`, `sync_count`, `export_count`, `import_count`, `error_count`, `last_sync_time`, `lamport_time`).
+- **Graceful Lifecycle:** Captures `SIGINT` / `SIGTERM` signals, flushing in-flight replication passes before terminating.
 
 #### 3.6.3. Autonomous Replication Guarantees
 

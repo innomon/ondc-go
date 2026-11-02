@@ -160,26 +160,56 @@ The discovery engine ([`/shared/p2p/discovery.go`](/shared/p2p/discovery.go)) op
 
 ### 4.3. sqlite-p2p Runtime Interoperability Bridge Setup
 
-When running in heterogeneous clusters where nodes interoperate with the [`sqlite-p2p`](https://github.com/innomon/sqlite-p2p) decentralized mesh:
+When running in heterogeneous clusters where nodes interoperate with the [`sqlite-p2p`](https://github.com/innomon/sqlite-p2p) decentralized mesh, deploy the standalone bridge daemon ([`cmd/ondc-p2p-bridge`](/cmd/ondc-p2p-bridge)):
 
-1. **Environment Variables:**
-   ```bash
-   # Primary relational SQLite DB
-   export ONDC_SQLITE_DB_PATH="/var/data/ondc/ondc.db"
+1. **Configuration Precedence (CLI Flags > Environment Variables > Defaults):**
 
-   # sqlite-p2p crm_store DB
-   export ONDC_SQLITE_P2P_CRM_PATH="/var/data/ondc/sqlite_p2p_crm.db"
+   | Parameter | CLI Flag | Environment Variable | Default |
+   | :--- | :--- | :--- | :--- |
+   | Primary ONDC DB | `--db-path` | `ONDC_SQLITE_DB_PATH` | `./data/ondc.db` |
+   | sqlite-p2p DB | `--crm-path` | `ONDC_SQLITE_P2P_CRM_PATH` | `./data/sqlite_p2p_crm.db` |
+   | Node Identifier | `--node-id` | `ONDC_NODE_ID` | `node-<hostname>` |
+   | Sync Interval | `--sync-interval` | `ONDC_P2P_SYNC_INTERVAL` | `2s` |
+   | Max Batch Size | `--max-batch-size` | `ONDC_P2P_MAX_BATCH_SIZE` | `500` |
+   | HTTP Telemetry | `--http-addr` | `ONDC_BRIDGE_HTTP_ADDR` | `:8085` |
 
-   # Bridge sync frequency
-   export ONDC_SQLITE_P2P_SYNC_INTERVAL="2s"
+2. **Running as a Systemd Service:**
+   ```ini
+   [Unit]
+   Description=ONDC to sqlite-p2p Auto-Replication Bridge Daemon
+   After=network.target
+
+   [Service]
+   Type=simple
+   User=ondc
+   ExecStart=/usr/local/bin/ondc-p2p-bridge \
+       --db-path=/var/data/ondc/ondc.db \
+       --crm-path=/var/data/ondc/sqlite_p2p_crm.db \
+       --sync-interval=2s \
+       --http-addr=:8085
+   Restart=always
+   RestartSec=5s
+
+   [Install]
+   WantedBy=multi-user.target
    ```
 
-2. **Automatic Replication Behavior:**
-   - **Zero-touch Outbound Export:** Every write to `transactions` or `registrations` triggers change log generation. The bridge worker exports changesets directly to `crm_store` at the configured interval.
-   - **Zero-touch Inbound Ingestion:** Remote changesets arriving via the `sqlite-p2p` P2P gossip layer are ingested into `crm_store` and immediately reconciled into the ONDC relational schema via Lamport Last-Write-Wins (LWW) conflict resolution.
-   - **Health & Interop Status:** Inspect the active state via the `/p2p/status` endpoint to confirm peer replication latency and Lamport clock values.
+3. **Running in Docker:**
+   ```bash
+   docker run -d \
+       --name ondc-p2p-bridge \
+       -v /host/data:/data \
+       -e ONDC_SQLITE_DB_PATH="/data/ondc.db" \
+       -e ONDC_SQLITE_P2P_CRM_PATH="/data/sqlite_p2p_crm.db" \
+       -p 8085:8085 \
+       ghcr.io/innomon/ondc-p2p-bridge:latest
+   ```
 
-### 4.3. Peer Mutual Authentication
+4. **Health Checks & Telemetry:**
+   - **Liveness/Readiness Probe:** `curl http://localhost:8085/healthz` (returns `200 {"status":"ok"}`).
+   - **Replication Metrics:** `curl http://localhost:8085/status` (returns JSON stats on exports, imports, Lamport clock, and sync errors).
+
+### 4.4. Peer Mutual Authentication
 
 All replication calls (`/p2p/push`, `/p2p/pull`, `/p2p/ping`) enforce cryptographic mutual authentication:
 
