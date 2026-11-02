@@ -16,8 +16,8 @@
 - [x] Task: Implement `cmd/ondc-p2p-bridge/main.go` entrypoint [c40f203]
     - [x] Handcrafted CLI argument parser using standard library `flag` and OS signal trap (SIGINT/SIGTERM)
     - [x] Wire daemon start, HTTP server launch, and clean shutdown handling
-- [ ] Task: Create Bazel build target `//cmd/ondc-p2p-bridge` in `cmd/ondc-p2p-bridge/BUILD.bazel`
-    - [ ] Define `go_binary` rule and verify `bazel build //cmd/ondc-p2p-bridge` and `go build ./cmd/ondc-p2p-bridge`
+- [x] Task: Create Bazel build target `//cmd/ondc-p2p-bridge` in `cmd/ondc-p2p-bridge/BUILD.bazel` [3eddd8f]
+    - [x] Define `go_binary` rule and verify `bazel build //cmd/ondc-p2p-bridge` and `go build ./cmd/ondc-p2p-bridge`
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Standalone CLI Binary & Bazel Target' (Protocol in workflow.md)
 
 ## Phase 3: End-to-End Integration Testing & Documentation
