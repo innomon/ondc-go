@@ -20,11 +20,11 @@
     - [x] Coordinate unified graceful shutdown (SIGINT/SIGTERM) with timeout draining
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Network Listeners, Dual-Mode TLS (autocert) & Embedded P2P Bridge' (Protocol in workflow.md) [bc771fd]
 
-## Phase 3: Unified Binary Entrypoint (`cmd/ondc-node`), Bazel Rules & E2E Testing
+## Phase 3: Unified Binary Entrypoint (`cmd/ondc-node`), Bazel Rules & E2E Testing [checkpoint: 73693c5]
 - [x] Task: Write end-to-end integration tests for unified server (`test/unified_node_e2e_test.go`) [e5975f4]
     - [x] Test running unified server, hitting onboarding `/ondc-site-verification.html`, buyer/seller endpoints, and verifying background P2P replication
     - [x] Test graceful shutdown of all listeners and SQLite connections
 - [x] Task: Implement CLI entrypoint (`cmd/ondc-node/main.go`), Bazel target (`cmd/ondc-node/BUILD.bazel`), and documentation [0ee9838]
     - [x] Implement `cmd/ondc-node/main.go` and `BUILD.bazel`
     - [x] Update `docs/ARCHITECTURE.md` and `docs/DEVOPS.md` with unified node single-binary deployment guides (Cloudflare Tunnel vs Standalone VM with Let's Encrypt)
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Unified Binary Entrypoint (cmd/ondc-node), Bazel Rules & E2E Testing' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Unified Binary Entrypoint (cmd/ondc-node), Bazel Rules & E2E Testing' (Protocol in workflow.md) [73693c5]
