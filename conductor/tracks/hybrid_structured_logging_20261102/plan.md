@@ -12,11 +12,11 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Core Engine: LogRotator & MultiHandler' (Protocol in workflow.md) [2690e40]
 
 ## Phase 2: Hybrid Logger APIs & Drop-in `glog` Compatibility Facade
-- [ ] Task: Write unit tests for Hybrid Logger, Caller PC preservation, and `glog` facade (`shared/logging/logger_test.go`, `shared/logging/compat_test.go`)
-    - [ ] Test caller PC resolution matching emitter file and line number
-    - [ ] Test structured logging with context and attributes
-    - [ ] Test `glog` drop-in methods (`Infof`, `Errorf`, `Warningf`, `V(level)`, `Exitf`)
-- [ ] Task: Implement Hybrid Logger, Caller Traversal, and Compatibility Facade (`shared/logging/logger.go`, `shared/logging/compat.go`)
+- [x] Task: Write unit tests for Hybrid Logger, Caller PC preservation, and `glog` facade (`shared/logging/logger_test.go`, `shared/logging/compat_test.go`) [7cf6904]
+    - [x] Test caller PC resolution matching emitter file and line number
+    - [x] Test structured logging with context and attributes
+    - [x] Test `glog` drop-in methods (`Infof`, `Errorf`, `Warningf`, `V(level)`, `Exitf`)
+- [~] Task: Implement Hybrid Logger, Caller Traversal, and Compatibility Facade (`shared/logging/logger.go`, `shared/logging/compat.go`)
     - [ ] Implement `Init(cfg Config)` with dual TextHandler + JSONHandler sinks
     - [ ] Implement dynamic frame traversal with `runtime.Callers`
     - [ ] Implement package-level `glog` compatibility methods
