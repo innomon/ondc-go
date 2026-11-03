@@ -1,6 +1,6 @@
 # Implementation Plan: Hybrid Structured Logging & Rotation (`shared/logging`)
 
-## Phase 1: Core Engine: `LogRotator` & `MultiHandler`
+## Phase 1: Core Engine: `LogRotator` & `MultiHandler` [checkpoint: 2690e40]
 - [x] Task: Write unit tests for `LogRotator` and `MultiHandler` (`shared/logging/rotator_test.go`, `shared/logging/handler_test.go`) [fd03ac5]
     - [x] Test size-based rotation and timestamped backup naming
     - [x] Test backup pruning adhering to `maxBackups`
@@ -9,7 +9,7 @@
 - [x] Task: Implement `LogRotator` and `MultiHandler` (`shared/logging/rotator.go`, `shared/logging/handler.go`) [e0b9506]
     - [x] Implement thread-safe `LogRotator` (`io.Writer` and `io.Closer`)
     - [x] Implement `MultiHandler` adhering to `slog.Handler`
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Core Engine: LogRotator & MultiHandler' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Core Engine: LogRotator & MultiHandler' (Protocol in workflow.md) [2690e40]
 
 ## Phase 2: Hybrid Logger APIs & Drop-in `glog` Compatibility Facade
 - [ ] Task: Write unit tests for Hybrid Logger, Caller PC preservation, and `glog` facade (`shared/logging/logger_test.go`, `shared/logging/compat_test.go`)
