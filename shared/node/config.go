@@ -38,6 +38,12 @@ type NodeConfig struct {
 	EnableSeller bool          `json:"enable_seller"`
 	EnableP2P    bool          `json:"enable_p2p"`
 	DrainTimeout time.Duration `json:"drain_timeout"`
+	LogDir        string        `json:"log_dir"`
+	LogLevel      string        `json:"log_level"`
+	LogMaxSizeMB  int           `json:"log_max_size_mb"`
+	LogMaxBackups int           `json:"log_max_backups"`
+	LogConsole    bool          `json:"log_console"`
+	LogFile       bool          `json:"log_file"`
 }
 
 // IsLocalhost checks whether a given domain refers to a loopback address or local test environment.
@@ -85,6 +91,12 @@ func LoadNodeConfig(args []string, lookupEnv func(string) (string, bool)) (*Node
 	defaultEnableSeller := true
 	defaultEnableP2P := true
 	defaultDrainTimeout := 10 * time.Second
+	defaultLogDir := "./data/logs"
+	defaultLogLevel := "INFO"
+	defaultLogMaxSizeMB := 100
+	defaultLogMaxBackups := 5
+	defaultLogConsole := true
+	defaultLogFile := true
 
 	// 2. Overlay Environment Variables
 	if val, ok := lookupEnv("ONDC_MODE"); ok && val != "" {
@@ -140,6 +152,36 @@ func LoadNodeConfig(args []string, lookupEnv func(string) (string, bool)) (*Node
 			defaultDrainTimeout = d
 		}
 	}
+	if val, ok := lookupEnv("ONDC_LOG_DIR"); ok && val != "" {
+		defaultLogDir = strings.TrimSpace(val)
+	}
+	if val, ok := lookupEnv("ONDC_LOG_LEVEL"); ok && val != "" {
+		defaultLogLevel = strings.TrimSpace(val)
+	}
+	if val, ok := lookupEnv("ONDC_LOG_MAX_SIZE_MB"); ok && val != "" {
+		if s, err := strconv.Atoi(val); err == nil && s > 0 {
+			defaultLogMaxSizeMB = s
+		}
+	} else if val, ok := lookupEnv("ONDC_LOG_MAX_SIZE"); ok && val != "" {
+		if s, err := strconv.Atoi(val); err == nil && s > 0 {
+			defaultLogMaxSizeMB = s
+		}
+	}
+	if val, ok := lookupEnv("ONDC_LOG_MAX_BACKUPS"); ok && val != "" {
+		if b, err := strconv.Atoi(val); err == nil && b >= 0 {
+			defaultLogMaxBackups = b
+		}
+	}
+	if val, ok := lookupEnv("ONDC_LOG_CONSOLE"); ok && val != "" {
+		if b, err := strconv.ParseBool(val); err == nil {
+			defaultLogConsole = b
+		}
+	}
+	if val, ok := lookupEnv("ONDC_LOG_FILE"); ok && val != "" {
+		if b, err := strconv.ParseBool(val); err == nil {
+			defaultLogFile = b
+		}
+	}
 
 	// 3. Define and Parse CLI Flags
 	fs := flag.NewFlagSet("ondc-node", flag.ContinueOnError)
@@ -158,26 +200,38 @@ func LoadNodeConfig(args []string, lookupEnv func(string) (string, bool)) (*Node
 	enableSellerFlag := fs.Bool("enable-seller", defaultEnableSeller, "Enable Seller Platform endpoints")
 	enableP2PFlag := fs.Bool("enable-p2p", defaultEnableP2P, "Enable embedded SQLite P2P replication engine")
 	drainTimeoutFlag := fs.Duration("drain-timeout", defaultDrainTimeout, "Timeout for graceful server shutdown")
+	logDirFlag := fs.String("log-dir", defaultLogDir, "Directory for storing rotated structured log files")
+	logLevelFlag := fs.String("log-level", defaultLogLevel, "Log level: 'DEBUG', 'INFO', 'WARN', or 'ERROR'")
+	logMaxSizeFlag := fs.Int("log-max-size", defaultLogMaxSizeMB, "Maximum log file size in MB before rotation")
+	logMaxBackupsFlag := fs.Int("log-max-backups", defaultLogMaxBackups, "Maximum number of rotated backup log files to retain")
+	logConsoleFlag := fs.Bool("log-console", defaultLogConsole, "Enable console (stderr) human-readable log output")
+	logFileFlag := fs.Bool("log-file", defaultLogFile, "Enable rotated JSONL file log output")
 
 	if err := fs.Parse(args); err != nil {
 		return nil, err
 	}
 
 	cfg := &NodeConfig{
-		Mode:         strings.ToLower(strings.TrimSpace(*modeFlag)),
-		HTTPPort:     *httpPortFlag,
-		HTTPSPort:    *httpsPortFlag,
-		Domain:       strings.TrimSpace(*domainFlag),
-		CertDir:      strings.TrimSpace(*certDirFlag),
-		DBPath:       strings.TrimSpace(*dbPathFlag),
-		CRMPath:      strings.TrimSpace(*crmPathFlag),
-		NodeID:       strings.TrimSpace(*nodeIDFlag),
-		SyncInterval: *syncIntervalFlag,
-		MaxBatchSize: *maxBatchSizeFlag,
-		EnableBuyer:  *enableBuyerFlag,
-		EnableSeller: *enableSellerFlag,
-		EnableP2P:    *enableP2PFlag,
-		DrainTimeout: *drainTimeoutFlag,
+		Mode:          strings.ToLower(strings.TrimSpace(*modeFlag)),
+		HTTPPort:      *httpPortFlag,
+		HTTPSPort:     *httpsPortFlag,
+		Domain:        strings.TrimSpace(*domainFlag),
+		CertDir:       strings.TrimSpace(*certDirFlag),
+		DBPath:        strings.TrimSpace(*dbPathFlag),
+		CRMPath:       strings.TrimSpace(*crmPathFlag),
+		NodeID:        strings.TrimSpace(*nodeIDFlag),
+		SyncInterval:  *syncIntervalFlag,
+		MaxBatchSize:  *maxBatchSizeFlag,
+		EnableBuyer:   *enableBuyerFlag,
+		EnableSeller:  *enableSellerFlag,
+		EnableP2P:     *enableP2PFlag,
+		DrainTimeout:  *drainTimeoutFlag,
+		LogDir:        strings.TrimSpace(*logDirFlag),
+		LogLevel:      strings.TrimSpace(*logLevelFlag),
+		LogMaxSizeMB:  *logMaxSizeFlag,
+		LogMaxBackups: *logMaxBackupsFlag,
+		LogConsole:    *logConsoleFlag,
+		LogFile:       *logFileFlag,
 	}
 
 	// Validate mode

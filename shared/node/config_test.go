@@ -47,6 +47,9 @@ func TestLoadNodeConfig_Defaults(t *testing.T) {
 	if !node.IsLocalhost(cfg.Domain) {
 		t.Errorf("expected 'localhost' to be considered localhost")
 	}
+	if cfg.LogDir != "./data/logs" || cfg.LogLevel != "INFO" || cfg.LogMaxSizeMB != 100 || cfg.LogMaxBackups != 5 || !cfg.LogConsole || !cfg.LogFile {
+		t.Errorf("expected default logging settings, got: %+v", cfg)
+	}
 }
 
 func TestLoadNodeConfig_EnvOverride(t *testing.T) {
@@ -63,6 +66,12 @@ func TestLoadNodeConfig_EnvOverride(t *testing.T) {
 		"ONDC_ENABLE_BUYER":       "false",
 		"ONDC_ENABLE_SELLER":      "true",
 		"ONDC_ENABLE_P2P":         "true",
+		"ONDC_LOG_DIR":            "/var/log/ondc",
+		"ONDC_LOG_LEVEL":          "DEBUG",
+		"ONDC_LOG_MAX_SIZE_MB":    "200",
+		"ONDC_LOG_MAX_BACKUPS":    "10",
+		"ONDC_LOG_CONSOLE":        "false",
+		"ONDC_LOG_FILE":           "true",
 	}
 
 	mockEnv := func(key string) (string, bool) {
@@ -108,13 +117,18 @@ func TestLoadNodeConfig_EnvOverride(t *testing.T) {
 	if node.IsLocalhost(cfg.Domain) {
 		t.Errorf("expected 'node.ondc-partner.org' to not be localhost")
 	}
+	if cfg.LogDir != "/var/log/ondc" || cfg.LogLevel != "DEBUG" || cfg.LogMaxSizeMB != 200 || cfg.LogMaxBackups != 10 || cfg.LogConsole || !cfg.LogFile {
+		t.Errorf("expected env-overridden logging settings, got: %+v", cfg)
+	}
 }
 
 func TestLoadNodeConfig_FlagsPrecedenceOverEnv(t *testing.T) {
 	envVars := map[string]string{
-		"ONDC_MODE":      "tunnel",
-		"ONDC_HTTP_PORT": "8080",
-		"ONDC_DOMAIN":    "tunnel.domain.com",
+		"ONDC_MODE":       "tunnel",
+		"ONDC_HTTP_PORT":  "8080",
+		"ONDC_DOMAIN":     "tunnel.domain.com",
+		"ONDC_LOG_DIR":    "/var/log/from_env",
+		"ONDC_LOG_LEVEL":  "INFO",
 	}
 
 	mockEnv := func(key string) (string, bool) {
@@ -128,6 +142,10 @@ func TestLoadNodeConfig_FlagsPrecedenceOverEnv(t *testing.T) {
 		"-domain", "sovereign.ondc.org",
 		"-cert-dir", "/etc/letsencrypt",
 		"-enable-seller=false",
+		"-log-dir", "/mnt/flash/logs",
+		"-log-level", "DEBUG",
+		"-log-max-size", "50",
+		"-log-max-backups", "3",
 	}
 
 	cfg, err := node.LoadNodeConfig(cliArgs, mockEnv)
@@ -149,6 +167,9 @@ func TestLoadNodeConfig_FlagsPrecedenceOverEnv(t *testing.T) {
 	}
 	if cfg.EnableSeller != false {
 		t.Errorf("flag should override env: expected EnableSeller=false, got %v", cfg.EnableSeller)
+	}
+	if cfg.LogDir != "/mnt/flash/logs" || cfg.LogLevel != "DEBUG" || cfg.LogMaxSizeMB != 50 || cfg.LogMaxBackups != 3 {
+		t.Errorf("flag should override env for logging: %+v", cfg)
 	}
 }
 
