@@ -28,7 +28,7 @@ import (
 	auth "ondc/shared/signing-authentication/authentication"
 
 	"github.com/benbjohnson/clock"
-	log "github.com/golang/glog"
+	log "ondc/shared/logging"
 )
 
 // Adapter wraps an handler and return a new handler

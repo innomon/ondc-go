@@ -1,0 +1,24 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "logging",
+    srcs = [
+        "compat.go",
+        "handler.go",
+        "logger.go",
+        "rotator.go",
+    ],
+    importpath = "ondc/shared/logging",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "logging_test",
+    srcs = [
+        "compat_test.go",
+        "handler_test.go",
+        "logger_test.go",
+        "rotator_test.go",
+    ],
+    embed = [":logging"],
+)

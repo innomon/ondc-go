@@ -475,3 +475,50 @@ go tool cover -func=coverage.out
 - [ ] Cloudflare Tunnel running as a systemd service or container daemon (`cloudflared service install`).
 - [ ] SQLite database path mapped to persistent, high-IOPS storage with WAL mode enabled.
 - [ ] Static bootstrap peer seeds configured for cross-cluster or multi-region P2P replication.
+
+---
+
+## 8. Hybrid Structured Logging & Log Management
+
+### 8.1. Architecture & Zero-Dependency Sinks
+
+ONDC Go uses an in-house hybrid structured logging engine ([`shared/logging`](/shared/logging)) built on Go standard library `log/slog`:
+- **Dual Sinks:** Human-readable text logs emitted to `os.Stderr` (for container log drivers like `journald`, `docker logs`) and machine-readable JSON Lines emitted to rotating local disk files (for log shippers like Promtail, Vector, or FluentBit).
+- **Exact Call-Site Preservation:** Traverses runtime stack frames dynamically to guarantee log entries record the actual emitter's file name and line number, eliminating intermediate logger wrapper noise.
+
+### 8.2. CLI Flags & Environment Variables
+
+All logging parameters can be configured via flags or environment variables:
+
+| Flag | Environment Variable | Default | Description |
+|---|---|---|---|
+| `--log-dir` | `ONDC_LOG_DIR` | `./data/logs` | Directory path where rotated log files are stored |
+| `--log-level` | `ONDC_LOG_LEVEL` | `INFO` | Minimum logging level (`DEBUG`, `INFO`, `WARN`, `ERROR`) |
+| `--log-max-size` | `ONDC_LOG_MAX_SIZE_MB` | `100` | Maximum file size in MB before triggering rotation |
+| `--log-max-backups` | `ONDC_LOG_MAX_BACKUPS` | `5` | Maximum number of timestamped backup files to retain |
+| `--log-console` | `ONDC_LOG_CONSOLE` | `true` | Enable human-readable text logs on `os.Stderr` |
+| `--log-file` | `ONDC_LOG_FILE` | `true` | Enable structured JSON Lines logging to rotated files |
+
+### 8.3. Rotated File Format & Pruning
+
+- Active log file: `<log-dir>/ondc-node.jsonl`
+- Rotated backup files: `<log-dir>/ondc-node.<YYYYMMDD-HHMMSS>.jsonl`
+- When active file size reaches `--log-max-size`, the rotator renames the active file with a UTC timestamp, opens a clean file, and prunes older backups so only the newest `--log-max-backups` remain.
+
+### 8.4. Sample JSON Lines Record
+
+```json
+{
+  "time": "2026-11-03T06:50:35.123456+05:30",
+  "level": "INFO",
+  "source": {
+    "function": "ondc/cmd/ondc-node.main",
+    "file": "/cmd/ondc-node/main.go",
+    "line": 45
+  },
+  "msg": "Unified ONDC Node started cleanly",
+  "node_id": "sovereign-node-01",
+  "mode": "vm"
+}
+```
+

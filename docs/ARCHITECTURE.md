@@ -313,6 +313,44 @@ Instead of managing a separate sidecar process, `cmd/ondc-node` embeds the `p2p.
 
 ---
 
+### 3.8. Hybrid Structured Logging Engine (`shared/logging`)
+
+To satisfy modern observability requirements while preserving backwards compatibility with legacy microservices, the project implements a hybrid structured logging engine in [`shared/logging`](/shared/logging):
+
+```mermaid
+flowchart TD
+    subgraph Invocations["Application Call Sites"]
+        ModernAPI["Structured API<br/>logging.Log.InfoContext(ctx, msg, slog.String('tx_id', id))"]
+        LegacyAPI["Drop-In Glog Facade<br/>logging.Infof(msg, args...), logging.Errorf(...)"]
+    end
+
+    subgraph Package_Logging["shared/logging (Zero 3rd-Party Dependencies)"]
+        FrameInterceptor["Call Site PC Frame Interceptor<br/>(runtime.Callers dynamic traversal)"]
+        Mux["MultiHandler (slog.Handler)"]
+        Rotator["LogRotator (io.Writer & io.Closer)<br/>(Size-based rotation + backup pruning)"]
+    end
+
+    subgraph Outputs["Sinks"]
+        StderrSink["os.Stderr<br/>(slog.TextHandler, human-readable console)"]
+        FileSink["Rotated JSONL Files<br/>(slog.JSONHandler, machine-readable)"]
+    end
+
+    ModernAPI --> Mux
+    LegacyAPI --> FrameInterceptor --> Mux
+    Mux --> StderrSink
+    Mux --> Rotator
+    Rotator --> FileSink
+```
+
+#### 3.8.1. Design Highlights
+- **Zero Third-Party Dependencies:** Implemented entirely using Go's standard library (`log/slog`, `os`, `sync`, `runtime`, `time`).
+- **Dynamic Caller Frame Recovery:** Uses `runtime.Callers` and `runtime.CallersFrames` to skip helper frames within `shared/logging` and standard library runtime, assigning the exact caller PC to `slog.Record`. Both JSONL files and console records accurately report the true emitter file and line number.
+- **Thread-Safe Size-Based Rotation:** [`logging.LogRotator`](/shared/logging/rotator.go) transparently rotates log files when the size limit (`--log-max-size`) is reached, archiving backups as `<base>.<YYYYMMDD-HHMMSS><ext>` and automatically pruning oldest backups beyond `--log-max-backups`.
+- **Drop-In Compatibility Facade:** Provides package-level functions matching Google's `glog` interface (`Infof`, `Errorf`, `Warningf`, `V(level)`, `Exitf`), enabling seamless migration across legacy services without code refactoring.
+- **Multiplexed MultiHandler:** Dispatches records simultaneously to clean, human-readable text on `os.Stderr` and structured, timestamped JSON Lines to rotating files.
+
+---
+
 ## 4. End-to-End Verification
 
 The complete architecture is validated by automated integration and end-to-end tests:

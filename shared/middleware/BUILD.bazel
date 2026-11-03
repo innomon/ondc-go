@@ -21,10 +21,10 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//shared/errorcode",
+        "//shared/logging",
         "//shared/models/model",
         "//shared/signing-authentication/authentication",
         "@com_github_benbjohnson_clock//:clock",
-        "@com_github_golang_glog//:glog",
     ],
 )
 
