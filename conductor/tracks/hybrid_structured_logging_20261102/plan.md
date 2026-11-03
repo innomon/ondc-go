@@ -32,4 +32,4 @@
     - [x] Migrate `shared/middleware/middleware.go` from `github.com/golang/glog` to `ondc/shared/logging`
     - [x] Add `shared/logging/BUILD.bazel` target
     - [x] Update `docs/DEVOPS.md` and `docs/ARCHITECTURE.md` with structured logging reference
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Integration into Unified Node (cmd/ondc-node), Legacy Services & E2E Testing' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Integration into Unified Node (cmd/ondc-node), Legacy Services & E2E Testing' (Protocol in workflow.md) [c50d4fb]

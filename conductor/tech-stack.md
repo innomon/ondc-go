@@ -35,3 +35,10 @@
 ## Validation & Testing
 - **Schema Validation:** `github.com/go-playground/validator/v10`
 - **Test Framework:** Standard Go `testing` package with table-driven test patterns and JSON fixture verification (`testdata/*.json`)
+
+## Logging & Observability
+- **Engine:** Pure Go hybrid structured logging package ([`ondc/shared/logging`](/shared/logging)) with zero 3rd-party dependencies.
+- **Multiplexing:** Downstream `MultiHandler` emitting human-readable text to `os.Stderr` and structured JSON Lines (JSONL) to disk.
+- **Log Rotation:** Thread-safe `LogRotator` with size-based threshold rotation and timestamped backup archiving with configurable pruning (`--log-max-size`, `--log-max-backups`).
+- **Call-Site Precision:** Dynamic call stack inspection via `runtime.Callers` ensuring accurate emitter file and line number preservation.
+- **Compatibility:** Drop-in `glog` facade (`Infof`, `Errorf`, `Warningf`, `V(level)`, `Exitf`) enabling zero-effort migration across legacy microservices.
