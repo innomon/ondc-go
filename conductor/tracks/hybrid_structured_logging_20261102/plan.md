@@ -16,10 +16,10 @@
     - [x] Test caller PC resolution matching emitter file and line number
     - [x] Test structured logging with context and attributes
     - [x] Test `glog` drop-in methods (`Infof`, `Errorf`, `Warningf`, `V(level)`, `Exitf`)
-- [~] Task: Implement Hybrid Logger, Caller Traversal, and Compatibility Facade (`shared/logging/logger.go`, `shared/logging/compat.go`)
-    - [ ] Implement `Init(cfg Config)` with dual TextHandler + JSONHandler sinks
-    - [ ] Implement dynamic frame traversal with `runtime.Callers`
-    - [ ] Implement package-level `glog` compatibility methods
+- [x] Task: Implement Hybrid Logger, Caller Traversal, and Compatibility Facade (`shared/logging/logger.go`, `shared/logging/compat.go`) [b8f7d48]
+    - [x] Implement `Init(cfg Config)` with dual TextHandler + JSONHandler sinks
+    - [x] Implement dynamic frame traversal with `runtime.Callers`
+    - [x] Implement package-level `glog` compatibility methods
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Hybrid Logger APIs & Drop-in glog Compatibility Facade' (Protocol in workflow.md)
 
 ## Phase 3: Integration into Unified Node (`cmd/ondc-node`), Legacy Services & E2E Testing
