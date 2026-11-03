@@ -20,7 +20,7 @@
     - [x] Implement `Init(cfg Config)` with dual TextHandler + JSONHandler sinks
     - [x] Implement dynamic frame traversal with `runtime.Callers`
     - [x] Implement package-level `glog` compatibility methods
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Hybrid Logger APIs & Drop-in glog Compatibility Facade' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Hybrid Logger APIs & Drop-in glog Compatibility Facade' (Protocol in workflow.md) [648bb9a]
 
 ## Phase 3: Integration into Unified Node (`cmd/ondc-node`), Legacy Services & E2E Testing
 - [ ] Task: Write end-to-end integration test verifying unified logging and rotation (`test/logging_e2e_test.go`)
