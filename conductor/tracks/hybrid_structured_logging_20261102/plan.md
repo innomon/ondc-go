@@ -26,10 +26,10 @@
 - [x] Task: Write end-to-end integration test verifying unified logging and rotation (`test/logging_e2e_test.go`) [ea1b2da]
     - [x] Test unified server running with file logging, verifying JSONL structure, attributes, and call-site source
     - [x] Test simulated high-volume log writes triggering real file rotation
-- [~] Task: Integrate `shared/logging` into CLI flags, node server, and legacy middleware
+- [x] Task: Integrate `shared/logging` into CLI flags, node server, and legacy middleware [42524da]
     - [x] Update `shared/node/config.go` with `--log-dir`, `--log-level`, `--log-max-size`, `--log-max-backups`
-    - [ ] Wire `shared/logging` initialization into `cmd/ondc-node/main.go` and `cmd/ondc-p2p-bridge/main.go`
-    - [ ] Migrate `shared/middleware/middleware.go` from `github.com/golang/glog` to `ondc/shared/logging`
-    - [ ] Add `shared/logging/BUILD.bazel` target
-    - [ ] Update `docs/DEVOPS.md` and `docs/ARCHITECTURE.md` with structured logging reference
+    - [x] Wire `shared/logging` initialization into `cmd/ondc-node/main.go` and `cmd/ondc-p2p-bridge/main.go`
+    - [x] Migrate `shared/middleware/middleware.go` from `github.com/golang/glog` to `ondc/shared/logging`
+    - [x] Add `shared/logging/BUILD.bazel` target
+    - [x] Update `docs/DEVOPS.md` and `docs/ARCHITECTURE.md` with structured logging reference
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Integration into Unified Node (cmd/ondc-node), Legacy Services & E2E Testing' (Protocol in workflow.md)
