@@ -113,4 +113,46 @@ func TestCompat_ExitAndExitf(t *testing.T) {
 	if !strings.Contains(buf.String(), "fatal exit code 1") {
 		t.Errorf("Expected log buffer to contain fatal message, got %s", buf.String())
 	}
+
+	exitCalled = false
+	Exit("simple exit")
+	if !exitCalled {
+		t.Fatalf("Expected Exit to invoke exit handler")
+	}
+
+	exitCalled = false
+	Exitln("exit with newline")
+	if !exitCalled {
+		t.Fatalf("Expected Exitln to invoke exit handler")
+	}
+}
+
+func TestCompat_BasicVariadicMethods(t *testing.T) {
+	var buf bytes.Buffer
+	handler := slog.NewTextHandler(&buf, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	})
+	SetLogger(slog.New(handler))
+
+	Info("info", "msg")
+	Infoln("infoln", "msg")
+	Warning("warning", "msg")
+	Warningln("warningln", "msg")
+	Error("error", "msg")
+	Errorln("errorln", "msg")
+
+	v0 := V(0)
+	if !v0 {
+		t.Errorf("Expected V(0) to be true for Info level")
+	}
+	v1 := V(1)
+	v1.Info("v1", "info")
+	v1.Infoln("v1", "infoln")
+
+	out := buf.String()
+	for _, term := range []string{"infomsg", "warningmsg", "errormsg", "v1info"} {
+		if !strings.Contains(out, term) {
+			t.Errorf("Expected log output to contain %q, got: %s", term, out)
+		}
+	}
 }

@@ -120,3 +120,45 @@ func TestLogger_StructuredAttributesAndContext(t *testing.T) {
 		t.Errorf("Unexpected entry attrs: %v", entry)
 	}
 }
+
+func TestLogger_CustomLoggerMethodsAndLevelParsing(t *testing.T) {
+	if ParseLevel("DEBUG") != slog.LevelDebug {
+		t.Errorf("ParseLevel DEBUG mismatch")
+	}
+	if ParseLevel("WARN") != slog.LevelWarn || ParseLevel("WARNING") != slog.LevelWarn {
+		t.Errorf("ParseLevel WARN mismatch")
+	}
+	if ParseLevel("ERROR") != slog.LevelError {
+		t.Errorf("ParseLevel ERROR mismatch")
+	}
+	if ParseLevel("UNKNOWN") != slog.LevelInfo {
+		t.Errorf("ParseLevel default mismatch")
+	}
+
+	var buf bytes.Buffer
+	handler := slog.NewTextHandler(&buf, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	})
+	SetLogger(slog.New(handler))
+
+	cl := NewCustomLogger(nil)
+	cl.Debugf("debug %s", "val")
+	cl.Warningf("warn %s", "val")
+	cl.Errorf("error %s", "val")
+
+	out := buf.String()
+	if !strings.Contains(out, "debug val") || !strings.Contains(out, "warn val") || !strings.Contains(out, "error val") {
+		t.Errorf("CustomLogger methods output missing expected text: %s", out)
+	}
+}
+
+func TestLogger_InitFallbacks(t *testing.T) {
+	// Neither console nor file enabled -> fallback to console error handler
+	l, err := Init(Config{})
+	if err != nil {
+		t.Fatalf("Init fallback failed: %v", err)
+	}
+	if l == nil {
+		t.Fatalf("Expected non-nil logger")
+	}
+}
